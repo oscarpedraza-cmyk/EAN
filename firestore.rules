@@ -1,0 +1,14 @@
+rules_version = '2';
+
+// Reglas mínimas para la colección de sesiones de mentoría.
+// El cliente escribe directo a Firestore, así que las reglas son el único control:
+// ajústalas a tu modelo de autenticación antes de publicar.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /mentorship_sessions/{sessionId} {
+      // Sustituye por `request.auth != null` (o por una comprobación de rol de mentor)
+      // en cuanto tengas Firebase Auth en la app.
+      allow read, write: if false;
+    }
+  }
+}
