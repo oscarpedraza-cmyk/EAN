@@ -112,8 +112,8 @@ export default function PasoEvidencia({
                     <span className="ml-auto normal-case tracking-normal">{dictar("accion", "la acción")}</span>
                   </label>
                   <textarea
-                    className="campo min-h-[62px] resize-y leading-relaxed"
-                    placeholder="Qué se hizo y con quién."
+                    className="campo min-h-[100px] resize-y leading-relaxed"
+                    placeholder="Ej: Lanzamos campaña en redes sociales (Instagram, Facebook) el 10 de agosto. Ofrecimos 20% descuento en primer pedido. Contactamos 100 usuarios existentes por WhatsApp."
                     value={fila.accion}
                     onChange={(e) => alCambiar(fila.id, { accion: e.target.value })}
                   />
@@ -129,8 +129,8 @@ export default function PasoEvidencia({
                     <span className="ml-auto normal-case tracking-normal">{dictar("resultado", "el resultado")}</span>
                   </label>
                   <textarea
-                    className="campo min-h-[62px] resize-y leading-relaxed"
-                    placeholder="Qué ocurrió, con números y denominador."
+                    className="campo min-h-[100px] resize-y leading-relaxed"
+                    placeholder="Ej: De 100 contactos, 32 hicieron clic en el enlace. De esos 32, 18 completaron el primer pedido. Tasa de conversión: 18%. La campaña fue visto por 450 personas según Analytics."
                     value={fila.resultado}
                     onChange={(e) => alCambiar(fila.id, { resultado: e.target.value })}
                   />
@@ -149,7 +149,7 @@ export default function PasoEvidencia({
                 </label>
                 <input
                   className={`campo ${sinSoporte ? "border-ladrillo/45 focus:border-ladrillo" : ""}`}
-                  placeholder="Hoja de cálculo, capturas, facturas, bitácora de contactos, CRM…"
+                  placeholder="Ej: Dashboard de Google Analytics (prueba: user@comidas-express.com), captura de conversiones en Stripe, hoja de Google Sheets con registro de pedidos"
                   value={fila.soporte}
                   onChange={(e) => alCambiar(fila.id, { soporte: e.target.value })}
                 />
@@ -198,7 +198,7 @@ export default function PasoEvidencia({
                   </label>
                   <input
                     className="campo"
-                    placeholder="¿Qué aprendieron?"
+                    placeholder="Ej: Los descuentos alto atrayeron clicks pero muchos no completaron. WhatsApp fue más efectivo que Facebook. Necesitamos mejorar checkout para reducir abandonos."
                     value={fila.aprendizaje}
                     onChange={(e) => alCambiar(fila.id, { aprendizaje: e.target.value })}
                   />

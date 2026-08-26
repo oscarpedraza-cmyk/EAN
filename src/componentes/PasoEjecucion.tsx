@@ -56,7 +56,7 @@ export default function PasoEjecucion({ valor, alCambiar, activo }: Props) {
           <input
             id="equipo"
             className="campo"
-            placeholder="Nombre del emprendimiento"
+            placeholder="Ej: Comidas Express - Delivery de Almuerzos"
             value={valor.equipo}
             onChange={(e) => alCambiar({ equipo: e.target.value })}
             autoComplete="off"
@@ -72,8 +72,8 @@ export default function PasoEjecucion({ valor, alCambiar, activo }: Props) {
             </label>
             <textarea
               id="plan"
-              className="campo min-h-[86px] resize-y leading-relaxed"
-              placeholder="Qué se comprometieron a ejecutar en Mentoría 1."
+              className="campo min-h-[120px] resize-y leading-relaxed"
+              placeholder="Ej: Completar 50 entregas el próximo mes con 3 repartidores, mejorando el tiempo promedio de entrega a máximo 30 minutos. Validar 5 nuevas zonas del barrio."
               value={valor.planAcordado}
               onChange={(e) => alCambiar({ planAcordado: e.target.value })}
             />
@@ -86,8 +86,8 @@ export default function PasoEjecucion({ valor, alCambiar, activo }: Props) {
             </label>
             <textarea
               id="ejecutado"
-              className="campo min-h-[86px] resize-y leading-relaxed"
-              placeholder="Qué hicieron de verdad, con quién y en qué periodo."
+              className="campo min-h-[120px] resize-y leading-relaxed"
+              placeholder="Ej: Logramos 42 entregas en 4 semanas con 2 repartidores (uno se enfermó). El tiempo promedio fue 35 min. Abrimos 3 de las 5 zonas planeadas. Dos entregas fallaron por dirección incorrecta."
               value={valor.loEjecutado}
               onChange={(e) => alCambiar({ loEjecutado: e.target.value })}
             />
@@ -105,7 +105,7 @@ export default function PasoEjecucion({ valor, alCambiar, activo }: Props) {
           <input
             id="desviaciones"
             className="campo"
-            placeholder="Qué quedó sin hacer, qué cambió sobre la marcha y por qué."
+            placeholder="Ej: No llegamos a 50 entregas por repartidor enfermo. 2 zonas no se abrieron por falta de motos. Sí mejoramos tiempo de entrega pero tuvimos más errores de dirección."
             value={valor.desviaciones}
             onChange={(e) => alCambiar({ desviaciones: e.target.value })}
           />
