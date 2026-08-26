@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Tablero de mentoria para la Ruta de Crecimiento Inteligente: evidencia, metricas y decisiones",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

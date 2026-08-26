@@ -1,0 +1,34 @@
+# Blueprint de Render. Con este archivo en el repo, Render configura el servicio solo:
+# New → Blueprint → conectar el repositorio. No hay que escribir comandos a mano.
+services:
+  - type: web
+    name: mentoria-crecimiento-inteligente
+    runtime: node
+    plan: free
+    # Virginia es la región más cercana a Colombia de las que ofrece Render.
+    region: virginia
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    # Next.js toma el puerto de la variable PORT que inyecta Render.
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # sync:false = el valor se escribe en el panel de Render, nunca en el repo.
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_APP_ID
+        sync: false

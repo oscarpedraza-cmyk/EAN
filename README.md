@@ -81,6 +81,33 @@ Con las variables `NEXT_PUBLIC_FIREBASE_*` los encuentros se guardan en la colec
 `firestore.rules` viene cerrado: **ábrelo solo cuando haya autenticación**, porque el cliente
 escribe directo a Firestore.
 
+## Publicar en Render
+
+El repo trae `render.yaml`, así que Render se configura solo:
+
+1. En Render: **New → Blueprint** y conectar este repositorio.
+2. Render lee el blueprint y crea el servicio con `npm ci && npm run build` y `npm run start`.
+3. En **Environment**, pegar `GEMINI_API_KEY`. Las demás variables son opcionales.
+
+No hay que escribir comandos ni elegir puerto: `next start` toma el que Render inyecta en `PORT`
+y escucha en todas las interfaces. `.node-version` fija Node 22 para el build.
+
+**Ojo con el plan gratuito:** el servicio se duerme tras ~15 minutos sin tráfico y el primer
+arranque después tarda cerca de un minuto. Si se va a usar en una sesión en vivo, conviene abrir
+la URL unos minutos antes, o pasar al plan de pago para que no se duerma.
+
+### Alternativa sin GitHub
+
+Si el repositorio no está disponible, Vercel despliega desde la carpeta local con un comando y
+un inicio de sesión por navegador:
+
+```bash
+npx vercel        # primera vez: crea el proyecto y da una URL de preview
+npx vercel --prod # publica en la URL definitiva
+```
+
+Las variables de entorno se cargan con `npx vercel env add GEMINI_API_KEY`.
+
 ## Estructura
 
 ```
