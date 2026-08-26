@@ -27,11 +27,11 @@ export default function Cabecera({
   const [preguntasAbiertas, setPreguntasAbiertas] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-casco-950/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-casco-700 bg-white backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl flex-col gap-2.5 px-4 py-2.5 lg:flex-row lg:items-center lg:gap-5">
         <div className="flex items-center gap-3">
           <div className="min-w-0">
-            <p className="truncate text-sm font-bold leading-tight text-slate-100">
+            <p className="truncate text-sm font-bold leading-tight text-pizarra-oscuro">
               Mentoría 2 · Evidencia, métricas y decisiones
             </p>
             <p className="truncate text-[11px] text-pizarra">
@@ -68,10 +68,10 @@ export default function Cabecera({
                     title={paso.ayuda}
                     className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition ${
                       activo
-                        ? "border-cian/60 bg-cian/15 text-cian-claro"
+                        ? "border-cian/60 bg-cian/15 text-cian"
                         : listo
-                          ? "border-menta/25 bg-menta/[0.07] text-menta"
-                          : "border-white/[0.08] text-pizarra hover:border-white/20 hover:text-slate-300"
+                          ? "border-menta/40 bg-menta/10 text-menta"
+                          : "border-casco-700 text-pizarra hover:border-casco-600 hover:text-pizarra-oscuro"
                     }`}
                   >
                     <span className="font-mono opacity-70">{paso.numero}</span>
@@ -111,7 +111,7 @@ export default function Cabecera({
           className={`boton px-2.5 py-1.5 text-xs ${
             preguntasAbiertas
               ? "bg-cian text-white"
-              : "border border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.08]"
+              : "border border-casco-700 bg-casco-950/5 text-pizarra hover:bg-casco-950/10"
           }`}
           aria-expanded={preguntasAbiertas}
         >
@@ -121,7 +121,7 @@ export default function Cabecera({
       </div>
 
       {preguntasAbiertas && (
-        <div className="animate-entrada border-t border-white/10 bg-casco-900/95">
+        <div className="animate-entrada border-t border-casco-700 bg-casco-950/10">
           <div className="mx-auto max-w-7xl px-4 py-3">
             <p className="mb-2 text-[11px] text-pizarra">
               No es necesario recorrerlas todas. Elijan las que profundicen en el bloqueo principal.
@@ -130,7 +130,7 @@ export default function Cabecera({
               {PREGUNTAS_GUIA.map((pregunta) => (
                 <li
                   key={pregunta}
-                  className="rounded-lg border border-white/[0.07] bg-white/[0.02] px-3 py-2 text-[13px] leading-snug text-slate-300"
+                  className="rounded-lg border border-casco-700 bg-casco-950/5 px-3 py-2 text-[13px] leading-snug text-pizarra"
                 >
                   {pregunta}
                 </li>
