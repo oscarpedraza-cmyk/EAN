@@ -1,8 +1,8 @@
 {
-  "name": "copiloto-mentoria",
+  "name": "mentoria-crecimiento-inteligente",
   "version": "1.0.0",
   "private": true,
-  "description": "Co-piloto de Mentoria: auditoria de evidencia en vivo para mentorias expres de 20 minutos",
+  "description": "Tablero de mentoria para la Ruta de Crecimiento Inteligente: evidencia, metricas y decisiones",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

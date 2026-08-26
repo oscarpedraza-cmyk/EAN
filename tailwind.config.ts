@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 
+/** Paleta tomada del theme de la plantilla institucional (ppt/theme1.xml). */
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
@@ -9,28 +10,36 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       colors: {
-        ink: {
-          950: "#070b14",
-          900: "#0b1120",
-          850: "#0f172a",
-          800: "#151f36",
-          700: "#1e2b47",
-          600: "#2b3b5c",
+        casco: {
+          950: "#02161f",
+          900: "#042433",
+          800: "#0a3243",
+          700: "#124256",
+          600: "#1c5670",
         },
+        cian: {
+          DEFAULT: "#0a7fa0",
+          claro: "#3aa8c4",
+          tenue: "#c9d8de",
+        },
+        menta: { DEFAULT: "#00d494", oscuro: "#2f7049" },
+        ladrillo: { DEFAULT: "#be4b4b", claro: "#e28a8a" },
+        ambar: { DEFAULT: "#e0a33c" },
+        pizarra: { DEFAULT: "#7a8a92", oscuro: "#4a5c66" },
       },
       keyframes: {
-        "fade-up": {
-          from: { opacity: "0", transform: "translateY(10px)" },
+        entrada: {
+          from: { opacity: "0", transform: "translateY(8px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
-        "pulse-ring": {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(239,68,68,0.45)" },
-          "50%": { boxShadow: "0 0 0 12px rgba(239,68,68,0)" },
+        latido: {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(190,75,75,.45)" },
+          "50%": { boxShadow: "0 0 0 10px rgba(190,75,75,0)" },
         },
       },
       animation: {
-        "fade-up": "fade-up .35s ease-out both",
-        "pulse-ring": "pulse-ring 1.6s ease-in-out infinite",
+        entrada: "entrada .3s ease-out both",
+        latido: "latido 1.8s ease-in-out infinite",
       },
     },
   },

@@ -1,214 +1,284 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import AuditPanel from "@/components/AuditPanel";
-import ClosingMatrix from "@/components/ClosingMatrix";
-import IntakePanel from "@/components/IntakePanel";
-import TimerHeader from "@/components/TimerHeader";
-import { isFirebaseConfigured } from "@/lib/firebase";
-import { buildEmailBody, generateOnePager } from "@/lib/pdf";
-import { persistSession, type PersistTarget } from "@/lib/storage";
-import type { AuditResult, Decision, IntakeData, MentorshipSession } from "@/lib/types";
-import { SESSION_SECONDS, useTimer } from "@/lib/useTimer";
+import Cabecera from "@/componentes/Cabecera";
+import PasoCierre from "@/componentes/PasoCierre";
+import PasoEjecucion from "@/componentes/PasoEjecucion";
+import PasoEvidencia from "@/componentes/PasoEvidencia";
+import PasoInterpretacion from "@/componentes/PasoInterpretacion";
+import PasoMetricas from "@/componentes/PasoMetricas";
+import { guardarEncuentro, type Destino } from "@/lib/almacenamiento";
+import { cuerpoCorreo, generarFicha } from "@/lib/ficha";
+import { firebaseConfigurado } from "@/lib/firebase";
+import { CHEQUEO_CIERRE, type ChequeoId, type Decision, type PasoId } from "@/lib/guia";
+import {
+  filaEvidenciaVacia,
+  filaMetricaVacia,
+  nuevoId,
+  type Ejecucion,
+  type Encuentro,
+  type FilaEvidencia,
+  type FilaMetrica,
+  type Interpretacion,
+  type SegundoCiclo,
+} from "@/lib/tipos";
+import { useTiempo } from "@/lib/useTiempo";
 
-const EMPTY_INTAKE: IntakeData = { teamName: "", problem: "", action: "", evidenceLevel: null };
+const EJECUCION_VACIA: Ejecucion = {
+  equipo: "",
+  planAcordado: "",
+  loEjecutado: "",
+  desviaciones: "",
+};
 
-type Phase = "intake" | "audit" | "closing";
+const CICLO_VACIO: SegundoCiclo = {
+  hipotesisAjustada: "",
+  accion: "",
+  metrica: "",
+  umbral: "",
+  responsable: "",
+  fecha: "",
+};
 
-function newSessionId(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
-  return `s-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-}
+const CHEQUEO_VACIO = Object.fromEntries(
+  CHEQUEO_CIERRE.map((c) => [c.id, false]),
+) as Record<ChequeoId, boolean>;
 
-export default function Home() {
-  const timer = useTimer();
-  const [sessionId] = useState(newSessionId);
-  const [createdAt] = useState(() => new Date().toISOString());
+export default function Inicio() {
+  const tiempo = useTiempo();
+  const [id] = useState(() => nuevoId("enc"));
+  const [creadoEn] = useState(() => new Date().toISOString());
 
-  const [intake, setIntake] = useState<IntakeData>(EMPTY_INTAKE);
-  const [audit, setAudit] = useState<AuditResult | null>(null);
+  const [ejecucion, setEjecucion] = useState<Ejecucion>(EJECUCION_VACIA);
+  const [evidencias, setEvidencias] = useState<FilaEvidencia[]>(() => [filaEvidenciaVacia()]);
+  const [metricas, setMetricas] = useState<FilaMetrica[]>(() => [filaMetricaVacia()]);
+  const [interpretacion, setInterpretacion] = useState<Interpretacion | null>(null);
   const [decision, setDecision] = useState<Decision | null>(null);
-  const [decisionNote, setDecisionNote] = useState("");
+  const [sustentoDecision, setSustentoDecision] = useState("");
+  const [segundoCiclo, setSegundoCiclo] = useState<SegundoCiclo>(CICLO_VACIO);
+  const [chequeo, setChequeo] = useState<Record<ChequeoId, boolean>>(CHEQUEO_VACIO);
 
-  const [loading, setLoading] = useState(false);
+  const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [savedTo, setSavedTo] = useState<PersistTarget | null>(null);
-  const [override, setOverride] = useState<Phase | null>(null);
+  const [aviso, setAviso] = useState<string | null>(null);
+  const [guardando, setGuardando] = useState(false);
+  const [guardadoEn, setGuardadoEn] = useState<Destino | null>(null);
+  const [pasoActivo, setPasoActivo] = useState<PasoId>("ejecucion");
 
-  const abortRef = useRef<AbortController | null>(null);
+  const [firmaAuditada, setFirmaAuditada] = useState<string | null>(null);
 
-  const patchIntake = useCallback((patch: Partial<IntakeData>) => {
-    setIntake((prev) => ({ ...prev, ...patch }));
-    setSavedTo(null);
-  }, []);
+  const abortoRef = useRef<AbortController | null>(null);
+  useEffect(() => () => abortoRef.current?.abort(), []);
 
-  const canAudit = Boolean(intake.problem.trim() || intake.action.trim());
+  const encuentro: Encuentro = useMemo(
+    () => ({
+      id,
+      creadoEn,
+      ejecucion,
+      evidencias,
+      metricas,
+      interpretacion,
+      decision,
+      sustentoDecision,
+      segundoCiclo,
+      chequeo,
+    }),
+    [id, creadoEn, ejecucion, evidencias, metricas, interpretacion, decision, sustentoDecision, segundoCiclo, chequeo],
+  );
 
-  const runAudit = useCallback(async () => {
-    if (!canAudit || loading) return;
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
+  /** Huella de todo lo que alimenta la auditoría, para saber si quedó desactualizada. */
+  const firmaActual = useMemo(
+    () =>
+      JSON.stringify([
+        ejecucion,
+        evidencias.map((f) => [f.accion, f.soporte, f.resultado, f.tipo, f.aprendizaje]),
+        metricas.map((m) => [m.metrica, m.definicion, m.fuente, m.lineaBase, m.umbral, m.resultado]),
+        [segundoCiclo.hipotesisAjustada, segundoCiclo.accion, segundoCiclo.metrica, segundoCiclo.umbral],
+      ]),
+    [ejecucion, evidencias, metricas, segundoCiclo],
+  );
 
-    setLoading(true);
+  const desactualizada = interpretacion !== null && firmaAuditada !== firmaActual;
+
+  const puedeInterpretar =
+    Boolean(ejecucion.loEjecutado.trim()) ||
+    evidencias.some((f) => f.accion.trim() || f.resultado.trim());
+
+  const auditar = useCallback(async () => {
+    if (!puedeInterpretar || cargando) return;
+    abortoRef.current?.abort();
+    const control = new AbortController();
+    abortoRef.current = control;
+
+    setCargando(true);
     setError(null);
-    setNotice(null);
+    setAviso(null);
     try {
-      const response = await fetch("/api/audit", {
+      const respuesta = await fetch("/api/interpretar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(intake),
-        signal: controller.signal,
+        body: JSON.stringify(encuentro),
+        signal: control.signal,
       });
-      const data = (await response.json()) as {
-        audit?: AuditResult;
-        notice?: string;
+      const datos = (await respuesta.json()) as {
+        interpretacion?: Interpretacion;
+        aviso?: string;
         error?: string;
       };
-      if (!response.ok || !data.audit) {
-        setError(data.error ?? "No se pudo completar la auditoría.");
+      if (!respuesta.ok || !datos.interpretacion) {
+        setError(datos.error ?? "No se pudo completar la auditoría.");
         return;
       }
-      setAudit(data.audit);
-      setNotice(data.notice ?? null);
-      setSavedTo(null);
+      setInterpretacion(datos.interpretacion);
+      setAviso(datos.aviso ?? null);
+      setFirmaAuditada(firmaActual);
+      setGuardadoEn(null);
     } catch (err) {
       if ((err as Error).name === "AbortError") return;
       setError("Sin conexión con el servicio de auditoría. Revisa la red e intenta de nuevo.");
     } finally {
-      if (abortRef.current === controller) {
-        abortRef.current = null;
-        setLoading(false);
+      if (abortoRef.current === control) {
+        abortoRef.current = null;
+        setCargando(false);
       }
     }
-  }, [canAudit, intake, loading]);
+  }, [puedeInterpretar, cargando, encuentro, firmaActual]);
 
-  useEffect(() => () => abortRef.current?.abort(), []);
-
-  /** Fase sugerida por el reloj, salvo que el mentor haya saltado manualmente. */
-  const phase: Phase = useMemo(() => {
-    if (override) return override;
-    const minutes = timer.elapsed / 60;
-    if (minutes < 8) return "intake";
-    if (minutes < 14) return "audit";
-    return "closing";
-  }, [override, timer.elapsed]);
-
-  const jumpToEvidence = useCallback(() => {
-    setOverride("audit");
-    if (!timer.running && timer.remaining === SESSION_SECONDS) timer.start();
-    document.getElementById("panel-auditoria")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (canAudit && !loading) void runAudit();
-  }, [canAudit, loading, runAudit, timer]);
-
-  const session: MentorshipSession = useMemo(
-    () => ({
-      id: sessionId,
-      createdAt,
-      intake,
-      audit,
-      decision,
-      decisionNote,
-      elapsedSeconds: timer.elapsed,
-    }),
-    [sessionId, createdAt, intake, audit, decision, decisionNote, timer.elapsed],
-  );
-
-  const save = useCallback(async () => {
-    setSaving(true);
-    try {
-      const result = await persistSession(session);
-      setSavedTo(result.target);
-    } finally {
-      setSaving(false);
-    }
-  }, [session]);
-
-  const exportPdf = useCallback(async () => {
-    await generateOnePager(session);
-    void save();
-  }, [session, save]);
-
-  const emailSummary = useCallback(() => {
-    const subject = `Ficha de mentoría — ${session.intake.teamName || "Equipo"}`;
-    const href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-      buildEmailBody(session),
-    )}`;
-    window.location.href = href;
-  }, [session]);
-
-  // Al elegir decisión se persiste sola: nadie recuerda pulsar "guardar" al minuto 20.
-  const chooseDecision = useCallback((value: Decision) => {
-    setDecision(value);
-    setOverride("closing");
-    setSavedTo(null);
+  const irA = useCallback((destino: PasoId) => {
+    setPasoActivo(destino);
+    document.getElementById(`paso-${destino}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
+
+  const guardar = useCallback(async () => {
+    setGuardando(true);
+    try {
+      setGuardadoEn(await guardarEncuentro(encuentro));
+    } finally {
+      setGuardando(false);
+    }
+  }, [encuentro]);
+
+  const exportar = useCallback(async () => {
+    await generarFicha(encuentro);
+    void guardar();
+  }, [encuentro, guardar]);
+
+  const enviarCorreo = useCallback(() => {
+    const asunto = `Mentoría 2 — ${encuentro.ejecucion.equipo || "Equipo"}`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(
+      cuerpoCorreo(encuentro),
+    )}`;
+  }, [encuentro]);
+
+  const conEvidencia = evidencias.filter((f) => f.accion.trim() || f.resultado.trim());
+  const conMetrica = metricas.filter((m) => m.metrica.trim());
+
+  const completados: Record<PasoId, boolean> = {
+    ejecucion: Boolean(ejecucion.loEjecutado.trim()),
+    evidencia: conEvidencia.length > 0 && conEvidencia.every((f) => f.soporte.trim()),
+    metricas: conMetrica.length > 0 && conMetrica.every((m) => m.fuente.trim() && m.umbral.trim()),
+    bloqueo: Boolean(interpretacion),
+    ciclo:
+      Boolean(decision) && CHEQUEO_CIERRE.every((c) => chequeo[c.id]),
+  };
 
   return (
     <div className="min-h-screen">
-      <TimerHeader
-        remaining={timer.remaining}
-        running={timer.running}
-        tone={timer.tone}
-        onToggle={timer.toggle}
-        onReset={() => {
-          timer.reset();
-          setOverride(null);
-        }}
-        onJumpToEvidence={jumpToEvidence}
+      <Cabecera
+        pasoActivo={pasoActivo}
+        completados={completados}
+        alIrA={irA}
+        segundos={tiempo.segundos}
+        corriendo={tiempo.corriendo}
+        alAlternar={tiempo.alternar}
+        alReiniciar={tiempo.reiniciar}
       />
 
-      {/* En movil el orden es 1-2-3; en escritorio la auditoria ocupa la columna derecha completa. */}
-      <main className="mx-auto grid max-w-6xl auto-rows-min gap-4 px-4 py-5 sm:px-6 sm:py-6 lg:grid-cols-2">
-        <div className="lg:col-start-1 lg:row-start-1">
-          <IntakePanel
-            value={intake}
-            onChange={patchIntake}
-            onClear={() => {
-              setIntake(EMPTY_INTAKE);
-              setAudit(null);
-              setNotice(null);
-              setError(null);
+      {/* Dos columnas independientes: en móvil se apilan y dan el orden 01→05 sin huecos. */}
+      <main className="mx-auto grid max-w-7xl items-start gap-3.5 px-4 py-4 lg:grid-cols-2">
+        <div className="flex flex-col gap-3.5">
+          <PasoEjecucion
+            valor={ejecucion}
+            alCambiar={(parche) => {
+              setEjecucion((v) => ({ ...v, ...parche }));
+              setGuardadoEn(null);
             }}
-            active={phase === "intake"}
+            activo={pasoActivo === "ejecucion"}
+          />
+
+          <PasoEvidencia
+            filas={evidencias}
+            lecturas={interpretacion?.lecturas ?? []}
+            alCambiar={(idFila, parche) =>
+              setEvidencias((filas) => filas.map((f) => (f.id === idFila ? { ...f, ...parche } : f)))
+            }
+            alAgregar={() => setEvidencias((filas) => [...filas, filaEvidenciaVacia()])}
+            alQuitar={(idFila) => setEvidencias((filas) => filas.filter((f) => f.id !== idFila))}
+            activo={pasoActivo === "evidencia"}
+          />
+
+          <PasoMetricas
+            filas={metricas}
+            alCambiar={(idFila, parche) =>
+              setMetricas((filas) => filas.map((m) => (m.id === idFila ? { ...m, ...parche } : m)))
+            }
+            alAgregar={(semilla) =>
+              setMetricas((filas) => {
+                if (!semilla) return [...filas, filaMetricaVacia()];
+                // Una sugerencia llena la primera fila en blanco antes de crear otra.
+                const vacia = filas.findIndex((m) => !m.metrica.trim() && !m.fuente.trim());
+                if (vacia >= 0) {
+                  return filas.map((m, i) => (i === vacia ? { ...m, ...semilla } : m));
+                }
+                return [...filas, { ...filaMetricaVacia(), ...semilla }];
+              })
+            }
+            alQuitar={(idFila) => setMetricas((filas) => filas.filter((m) => m.id !== idFila))}
+            activo={pasoActivo === "metricas"}
           />
         </div>
 
-        <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
-          <AuditPanel
-            audit={audit}
-            loading={loading}
+        <div className="flex flex-col gap-3.5">
+          <PasoInterpretacion
+            interpretacion={interpretacion}
+            cargando={cargando}
             error={error}
-            notice={notice}
-            canAudit={canAudit}
-            onAudit={() => {
-              setOverride("audit");
-              void runAudit();
+            aviso={aviso}
+            desactualizada={desactualizada}
+            puedeInterpretar={puedeInterpretar}
+            alInterpretar={() => {
+              setPasoActivo("bloqueo");
+              void auditar();
             }}
-            active={phase === "audit"}
+            activo={pasoActivo === "bloqueo"}
           />
-        </div>
 
-        <div className="lg:col-start-1 lg:row-start-2">
-          <ClosingMatrix
-            session={session}
-            onDecision={chooseDecision}
-            onNote={setDecisionNote}
-            onExport={exportPdf}
-            onEmail={emailSummary}
-            onSave={save}
-            saving={saving}
-            savedTo={savedTo}
-            firebaseReady={isFirebaseConfigured}
-            active={phase === "closing"}
+          <PasoCierre
+            encuentro={encuentro}
+            alDecidir={(valor) => {
+              setDecision(valor);
+              setPasoActivo("ciclo");
+              setGuardadoEn(null);
+            }}
+            alSustentar={setSustentoDecision}
+            alCambiarCiclo={(parche) => setSegundoCiclo((v) => ({ ...v, ...parche }))}
+            alMarcar={(idCheck, valor) => setChequeo((c) => ({ ...c, [idCheck]: valor }))}
+            alRevisarDiseno={() => void auditar()}
+            revisando={cargando}
+            disenoRevisado={Boolean(interpretacion) && !desactualizada}
+            alExportar={exportar}
+            alEnviar={enviarCorreo}
+            alGuardar={guardar}
+            guardando={guardando}
+            guardadoEn={guardadoEn}
+            firebaseListo={firebaseConfigurado}
+            activo={pasoActivo === "ciclo"}
           />
         </div>
       </main>
 
-      <footer className="mx-auto max-w-6xl px-4 pb-8 text-center text-[11px] text-slate-600 sm:px-6">
-        20 minutos · 3 etapas · una decisión. La evidencia manda.
+      <footer className="mx-auto max-w-7xl px-4 pb-6 text-center text-[10px] text-pizarra-oscuro">
+        Apoyo a la conversación de mentoría. No sustituye los entregables definidos en el curso.
       </footer>
     </div>
   );

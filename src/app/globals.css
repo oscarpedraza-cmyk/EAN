@@ -12,43 +12,45 @@ body {
 }
 
 body {
-  @apply bg-ink-950 text-slate-200 antialiased;
+  @apply bg-casco-950 text-slate-200 antialiased;
   background-image:
-    radial-gradient(60rem 40rem at 15% -10%, rgba(56, 189, 248, 0.07), transparent 60%),
-    radial-gradient(50rem 35rem at 95% 0%, rgba(16, 185, 129, 0.06), transparent 55%);
+    radial-gradient(55rem 38rem at 12% -12%, rgba(10, 127, 160, 0.13), transparent 62%),
+    radial-gradient(45rem 32rem at 92% -4%, rgba(0, 212, 148, 0.07), transparent 58%);
   background-attachment: fixed;
 }
 
-/* Tipografía tabular para que el cronómetro no baile al cambiar de dígito. */
 .tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
 
 @layer components {
-  .card {
-    @apply rounded-2xl border border-white/10 bg-ink-900/70 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset] backdrop-blur;
+  .tarjeta {
+    @apply rounded-2xl border border-white/10 bg-casco-900/70 backdrop-blur;
   }
-  .field {
-    @apply w-full rounded-xl border border-white/10 bg-ink-950/60 px-3.5 py-2.5 text-[15px] text-slate-100
-           placeholder:text-slate-500 outline-none transition
-           focus:border-sky-400/60 focus:ring-2 focus:ring-sky-400/20;
+  .campo {
+    @apply w-full rounded-lg border border-white/10 bg-casco-950/70 px-3 py-2 text-[14px] text-slate-100
+           placeholder:text-slate-600 outline-none transition
+           focus:border-cian/70 focus:ring-2 focus:ring-cian/25;
   }
-  .label {
-    @apply mb-1.5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400;
+  .rotulo {
+    @apply mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-pizarra;
   }
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
+  .boton {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold
            transition active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100;
   }
-  .btn-primary {
-    @apply btn bg-sky-500 text-ink-950 hover:bg-sky-400;
+  .boton-primario {
+    @apply boton bg-cian text-white hover:bg-cian-claro;
   }
-  .btn-ghost {
-    @apply btn border border-white/10 bg-white/[0.03] text-slate-200 hover:bg-white/[0.07];
+  .boton-menta {
+    @apply boton bg-menta text-casco-950 hover:bg-menta/85;
   }
-  .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold;
+  .boton-tenue {
+    @apply boton border border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.08];
+  }
+  .pastilla {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-semibold;
   }
 }
 
@@ -61,10 +63,4 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-white/20;
-}
-
-@media print {
-  body {
-    background: #fff;
-  }
 }

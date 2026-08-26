@@ -1,142 +1,210 @@
-import type { IntakeData } from "./types";
+import { BLOQUEOS, METRICAS_SUGERIDAS, TIPOS_EVIDENCIA } from "./guia";
+import type { Encuentro } from "./tipos";
 
-export const SYSTEM_INSTRUCTION = `Eres el "Co-piloto de Mentoría": un auditor de evidencia brutalmente honesto que asiste
-a un mentor durante una sesión exprés de 20 minutos con un equipo emprendedor.
+export const INSTRUCCION_SISTEMA = `Eres el copiloto de un mentor en la sesión "Mentoría 2 · Evidencia, métricas y decisiones"
+del curso Electiva I · Crecimiento Inteligente. El equipo YA EJECUTÓ un plan acordado semanas atrás;
+esta conversación interpreta lo ocurrido y define un segundo ciclo. No están empezando de cero.
 
-Tu único trabajo es separar la RETÓRICA del equipo de la EVIDENCIA real y devolver munición
-accionable para el mentor. Nunca felicites, nunca uses lenguaje motivacional, nunca suavices.
+Tu papel, según la guía del curso, es exactamente este y nada más:
 
-ESCALA DE EVIDENCIA (semáforo):
-- Nivel 1 (Rojo, declarativa): opiniones, encuestas, entrevistas, "les encantó". Casi no vale.
-- Nivel 2 (Amarillo, conductual): registros, clics, waitlist, formularios. Vale, pero no prueba disposición a pagar.
-- Nivel 3 (Verde, transaccional): ventas, pagos, anticipos, cartas de intención firmadas. Es lo único que prueba demanda real.
+1. AUDITAR LA EVIDENCIA. Para cada acción pregunta qué se hizo, con quién, qué ocurrió y
+   CÓMO PUEDE VERIFICARSE. Una afirmación sin soporte nombrable no es evidencia, por convincente
+   que suene. Distingue registros verificables de percepciones, anécdotas y explicaciones
+   retrospectivas (racionalizaciones armadas después de ver el resultado).
 
-CÓMO CALIFICAR EL "RELIABILITY SCORE" (0-100):
-- 0-35: la conclusión del equipo se apoya en evidencia Nivel 1, muestras diminutas, o el resultado
-  reportado no se deriva de la acción ejecutada.
-- 36-65: evidencia Nivel 2 razonable, o Nivel 3 con muestra muy pequeña o sesgo de cercanía (amigos, familia).
-- 66-100: evidencia Nivel 3 con volumen o repetición, medida sobre desconocidos, con umbral definido de antemano.
-Penaliza siempre: muestras sin número, "todos dijeron que sí", ausencia de grupo de control,
-resultados sin denominador, y cualquier conclusión más fuerte que el dato que la sostiene.
+2. AYUDAR A INTERPRETAR. Nunca celebres ni descartes una cifra aislada. Conecta cada resultado
+   con su línea base, su umbral definido de antemano y su tamaño de muestra. Señala expresamente
+   qué está interpretando el equipo a partir de una muestra todavía insuficiente. Interpreta las
+   métricas sin buscar justificar decisiones que el equipo ya tomó.
 
-AUTO-ENGAÑO: márcalo como detectado cuando el equipo extrapola una conclusión de negocio
-(demanda validada, product-market fit, disposición a pagar) desde evidencia que no la soporta,
-o cuando el nivel de evidencia que declara es mayor al que realmente describe.
+3. PROTEGER EL APRENDIZAJE. Una prueba que no alcanza su umbral es valiosa si revela POR QUÉ.
+   Siempre debes rescatar qué aprendió el equipo, incluso —sobre todo— cuando el resultado fue malo.
+   Nunca trates un experimento honesto y fallido como un fracaso del equipo.
 
-CATEGORÍA DE BLOQUEO: elige exactamente una.
-- "Demanda": nadie ha demostrado que quiere o paga esto.
-- "Oferta": la solución no resuelve, o no se puede entregar con la calidad prometida.
-- "Canal": existe demanda pero no saben alcanzarla de forma repetible y rentable.
-- "Operacion": pueden vender pero no entregar ni sostener la unidad económica.
+ESCALA DE EVIDENCIA: ${TIPOS_EVIDENCIA.map((t) => `${t.rotulo} (${t.define})`).join(" < ")}.
+Solo el comportamiento verificable sostiene una conclusión de negocio.
 
-PREGUNTAS CLAVE: exactamente 2, cortas (máximo 18 palabras), dirigidas al equipo,
-imposibles de responder con retórica. Cada una debe exigir un número, una fecha o un nombre propio.
+ESTADO DE LA HIPÓTESIS (semáforo): "Suposicion" si no hay evidencia suficiente;
+"Senal" si hay indicios sin comportamiento comprobado; "Evidencia" si hay comportamiento
+verificable con muestra y fuente. Tener rojos es aceptable; lo inaceptable es no saberlo.
 
-EXPERIMENTO 48 HORAS: debe costar 0 USD, ejecutarse con lo que el equipo ya tiene,
-producir evidencia de un nivel mayor al actual, y traer un UMBRAL DE ÉXITO numérico
-definido de antemano (formato "X de Y en Z horas").
+CONFIABILIDAD (0-100), por fila y global. Sube con: soporte nombrable y verificable,
+comportamiento observado, muestra con denominador, umbral fijado antes de ejecutar,
+medición sobre desconocidos. Baja con: ausencia de soporte, opiniones, muestras sin número,
+sesgo de cercanía (amigos, familia, compañeros), conclusiones más fuertes que el dato,
+y umbrales inventados después de ver el resultado.
+Una fila sin soporte nombrable NUNCA supera 30, sin importar qué tan bueno sea el resultado.
+
+BLOQUEO PRINCIPAL: elige exactamente uno de ${BLOQUEOS.map((b) => b.clave).join(", ")}.
+
+PREGUNTAS PARA EL MENTOR: exactamente 2, cortas (máximo 18 palabras), dirigidas al equipo,
+imposibles de responder con retórica. Cada una debe exigir un número, una fecha, una fuente
+o un nombre propio, y debe apuntar al bloqueo principal que identificaste.
+
+PRE-MORTEM DEL SEGUNDO CICLO. Esta es la parte más importante y tiene una regla absoluta:
+NO PREDIGAS NI ESTIMES EL RESULTADO DEL PRÓXIMO EXPERIMENTO. Un número inventado por ti es
+una cifra sin comportamiento detrás, exactamente lo que esta sesión enseña a rechazar.
+En su lugar haz tres cosas verificables:
+  a) MUESTRA MÍNIMA: dada la métrica y el umbral del equipo, calcula cuántas observaciones
+     hacen falta para que el resultado distinga éxito de ruido, y di si el diseño actual
+     puede decidir algo. Ejemplo: con umbral de 20% y 10 contactos, 2 conversiones y 1 son el
+     mismo resultado; hacen falta al menos 30.
+  b) MAPA DE DECISIÓN comprometido ANTES de ejecutar: qué resultado concreto llevaría a
+     Mantener, cuál a Ajustar, cuál a Detener y qué hallazgo inesperado abriría Explorar.
+     Escríbelos con números, no con adjetivos.
+  c) VARIABLES: cuál sola variable debe cambiar el segundo ciclo (la de mayor potencial de
+     aprendizaje) y cuáles deben quedar congeladas para que el resultado sea atribuible.
 
 Responde SIEMPRE en español neutro y únicamente con el JSON solicitado.`;
 
-const LEVEL_TEXT: Record<number, string> = {
-  1: "Nivel 1 (Rojo) · Opiniones / Encuestas",
-  2: "Nivel 2 (Amarillo) · Registros / Clics",
-  3: "Nivel 3 (Verde) · Ventas / Pagos / Compromisos firmados",
-};
+const ETIQUETA_TIPO: Record<string, string> = Object.fromEntries(
+  TIPOS_EVIDENCIA.map((t) => [t.clave, `${t.rotulo} — ${t.define}`]),
+);
 
-export function buildUserPrompt(intake: IntakeData): string {
-  return [
-    `EQUIPO: ${intake.teamName || "(sin nombre)"}`,
-    "",
-    `PROBLEMA / SEGMENTO declarado por el equipo:`,
-    intake.problem || "(no informado)",
-    "",
-    `ACCIÓN EJECUTADA Y RESULTADO reportado:`,
-    intake.action || "(no informado)",
-    "",
-    `NIVEL DE EVIDENCIA que el equipo se auto-asigna: ${
-      intake.evidenceLevel ? LEVEL_TEXT[intake.evidenceLevel] : "(no seleccionado)"
-    }`,
-    "",
-    "Audita esta declaración y devuelve el JSON.",
-  ].join("\n");
+export function construirPrompt(encuentro: Encuentro): string {
+  const { ejecucion, evidencias, metricas, segundoCiclo } = encuentro;
+  const partes: string[] = [];
+
+  partes.push(`EQUIPO: ${ejecucion.equipo || "(sin nombre)"}`);
+  partes.push("");
+  partes.push("=== 01 · LO EJECUTADO ===");
+  partes.push(`Plan acordado: ${ejecucion.planAcordado || "(no informado)"}`);
+  partes.push(`Lo que realmente se ejecutó: ${ejecucion.loEjecutado || "(no informado)"}`);
+  partes.push(`Desviaciones reconocidas: ${ejecucion.desviaciones || "(ninguna declarada)"}`);
+
+  partes.push("");
+  partes.push("=== 02 · AUDITORÍA DE EVIDENCIA ===");
+  const conContenido = evidencias.filter((f) => f.accion.trim() || f.resultado.trim());
+  if (!conContenido.length) {
+    partes.push("(el equipo no registró ninguna acción con evidencia)");
+  }
+  conContenido.forEach((f, i) => {
+    partes.push(`[Fila ${f.id}] (#${i + 1})`);
+    partes.push(`  Acción ejecutada: ${f.accion || "(vacío)"}`);
+    partes.push(`  Soporte declarado: ${f.soporte.trim() || "*** NINGUNO: el equipo no pudo nombrar dónde está el dato ***"}`);
+    partes.push(`  Resultado: ${f.resultado || "(vacío)"}`);
+    partes.push(`  Tipo que se auto-asigna: ${f.tipo ? ETIQUETA_TIPO[f.tipo] : "(no seleccionado)"}`);
+    partes.push(`  Aprendizaje que declara: ${f.aprendizaje || "(no declarado)"}`);
+  });
+
+  partes.push("");
+  partes.push("=== 03 · TABLERO DE MÉTRICAS ===");
+  const conMetrica = metricas.filter((m) => m.metrica.trim());
+  if (!conMetrica.length) {
+    partes.push("(sin métricas registradas: el equipo no puede contrastar contra línea base ni umbral)");
+  }
+  conMetrica.forEach((m) => {
+    partes.push(
+      `  · ${m.metrica} | definición: ${m.definicion || "(sin definir)"} | fuente: ${
+        m.fuente || "*** SIN FUENTE ***"
+      } | línea base: ${m.lineaBase || "(sin línea base)"} | umbral previo: ${
+        m.umbral || "*** SIN UMBRAL DEFINIDO DE ANTEMANO ***"
+      } | resultado: ${m.resultado || "(sin resultado)"}`,
+    );
+  });
+
+  const borrador = [
+    segundoCiclo.hipotesisAjustada && `hipótesis ajustada: ${segundoCiclo.hipotesisAjustada}`,
+    segundoCiclo.accion && `acción: ${segundoCiclo.accion}`,
+    segundoCiclo.metrica && `métrica: ${segundoCiclo.metrica}`,
+    segundoCiclo.umbral && `umbral: ${segundoCiclo.umbral}`,
+  ].filter(Boolean);
+  if (borrador.length) {
+    partes.push("");
+    partes.push("=== 05 · BORRADOR DEL SEGUNDO CICLO (del equipo) ===");
+    partes.push(borrador.join(" | "));
+  }
+
+  partes.push("");
+  partes.push(
+    `Referencia de métricas del curso: ${METRICAS_SUGERIDAS.map((m) => `${m.pregunta} → ${m.metrica}`).join("; ")}`,
+  );
+  partes.push("");
+  partes.push("Audita, interpreta y devuelve el JSON. Emite una lectura por cada fila listada, usando su id exacto.");
+
+  return partes.join("\n");
 }
 
-/** Esquema de respuesta forzado para Gemini (responseSchema). Tipos en mayúsculas, según la API. */
-export const RESPONSE_SCHEMA = {
+export const ESQUEMA_RESPUESTA = {
   type: "OBJECT",
   properties: {
-    reliabilityScore: {
-      type: "INTEGER",
-      description: "Confiabilidad de la evidencia, 0 a 100.",
-    },
-    scoreRationale: {
-      type: "STRING",
-      description: "Una sola frase (máximo 25 palabras) justificando el puntaje.",
-    },
-    selfDeception: {
-      type: "OBJECT",
-      properties: {
-        detected: { type: "BOOLEAN" },
-        headline: {
-          type: "STRING",
-          description: "Titular de 6 a 10 palabras nombrando el salto lógico.",
-        },
-        detail: {
-          type: "STRING",
-          description: "Máximo 2 frases: qué dato tienen contra qué están concluyendo.",
-        },
-      },
-      required: ["detected", "headline", "detail"],
-    },
-    blockCategory: {
-      type: "STRING",
-      enum: ["Demanda", "Oferta", "Canal", "Operacion"],
-    },
-    blockRationale: {
-      type: "STRING",
-      description: "Una frase explicando por qué ese es el cuello de botella.",
-    },
-    keyQuestions: {
+    confiabilidadGlobal: { type: "INTEGER", description: "Confiabilidad del conjunto de la evidencia, 0 a 100." },
+    estadoGlobal: { type: "STRING", enum: ["Suposicion", "Senal", "Evidencia"] },
+    lecturaGeneral: { type: "STRING", description: "Dos frases: qué sostiene la evidencia y qué no." },
+    lecturas: {
       type: "ARRAY",
-      description: "Exactamente 2 preguntas para que el mentor las lea en voz alta.",
+      description: "Una entrada por cada fila de evidencia recibida.",
+      items: {
+        type: "OBJECT",
+        properties: {
+          filaId: { type: "STRING", description: "El id exacto de la fila, tal como aparece entre corchetes." },
+          confiabilidad: { type: "INTEGER" },
+          estado: { type: "STRING", enum: ["Suposicion", "Senal", "Evidencia"] },
+          observacion: { type: "STRING", description: "Una frase: qué falta para que esto sea verificable." },
+          sinSoporte: { type: "BOOLEAN", description: "Verdadero si el equipo no nombró dónde está el dato." },
+        },
+        required: ["filaId", "confiabilidad", "estado", "observacion", "sinSoporte"],
+      },
+    },
+    contradicciones: {
+      type: "ARRAY",
+      description: "Resultados que contradicen lo que el equipo esperaba o afirma. Vacío si no hay.",
+      items: { type: "STRING" },
+      maxItems: "3",
+    },
+    muestraInsuficiente: {
+      type: "STRING",
+      description: "Qué está concluyendo el equipo desde una muestra que aún no lo permite.",
+    },
+    aprendizajeRescatado: {
+      type: "STRING",
+      description: "Qué se aprendió aunque no se alcanzara el umbral. Nunca dejar vacío.",
+    },
+    bloqueoPrincipal: {
+      type: "STRING",
+      enum: ["Segmento", "Oferta", "Canal", "Operacion", "Tecnologia", "Alianzas", "Financiamiento"],
+    },
+    razonBloqueo: { type: "STRING", description: "Una frase explicando por qué ese es el cuello de botella." },
+    preguntasMentor: {
+      type: "ARRAY",
+      description: "Exactamente 2 preguntas para leer en voz alta.",
       items: { type: "STRING" },
       minItems: "2",
       maxItems: "2",
     },
-    experiment: {
+    preMortem: {
       type: "OBJECT",
       properties: {
-        title: { type: "STRING", description: "Nombre corto del experimento." },
-        hypothesis: { type: "STRING", description: "Hipótesis falsable en una frase." },
-        steps: {
-          type: "ARRAY",
-          description: "3 a 4 pasos ejecutables hoy mismo, sin presupuesto.",
-          items: { type: "STRING" },
-          minItems: "3",
-          maxItems: "4",
+        puedeDecidir: { type: "BOOLEAN", description: "¿El diseño actual permite distinguir éxito de ruido?" },
+        muestraMinima: { type: "STRING", description: "Cuántas observaciones hacen falta y por qué." },
+        advertencia: { type: "STRING", description: "Qué haría inútil el segundo ciclo si no se corrige." },
+        mapaDecision: {
+          type: "OBJECT",
+          properties: {
+            mantener: { type: "STRING", description: "Resultado numérico que llevaría a Mantener." },
+            ajustar: { type: "STRING" },
+            detener: { type: "STRING" },
+            explorar: { type: "STRING", description: "Hallazgo inesperado que abriría una nueva hipótesis." },
+          },
+          required: ["mantener", "ajustar", "detener", "explorar"],
         },
-        successThreshold: {
-          type: "STRING",
-          description: "Umbral numérico definido de antemano. Formato: X de Y en Z horas.",
-        },
-        cost: { type: "STRING", description: "Siempre '$0 USD'." },
+        variableACambiar: { type: "STRING", description: "La única variable que debe cambiar y por qué." },
+        variablesACongelar: { type: "ARRAY", items: { type: "STRING" }, maxItems: "4" },
       },
-      required: ["title", "hypothesis", "steps", "successThreshold", "cost"],
-    },
-    evidenceGap: {
-      type: "STRING",
-      description: "Qué dato falta para subir un nivel en el semáforo de evidencia.",
+      required: ["puedeDecidir", "muestraMinima", "advertencia", "mapaDecision", "variableACambiar", "variablesACongelar"],
     },
   },
   required: [
-    "reliabilityScore",
-    "scoreRationale",
-    "selfDeception",
-    "blockCategory",
-    "blockRationale",
-    "keyQuestions",
-    "experiment",
-    "evidenceGap",
+    "confiabilidadGlobal",
+    "estadoGlobal",
+    "lecturaGeneral",
+    "lecturas",
+    "contradicciones",
+    "muestraInsuficiente",
+    "aprendizajeRescatado",
+    "bloqueoPrincipal",
+    "razonBloqueo",
+    "preguntasMentor",
+    "preMortem",
   ],
 } as const;

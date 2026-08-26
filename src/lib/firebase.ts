@@ -1,6 +1,6 @@
 import type { FirebaseApp } from "firebase/app";
 
-const config = {
+const configuracion = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
@@ -9,23 +9,27 @@ const config = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-export const isFirebaseConfigured = Boolean(config.apiKey && config.projectId && config.appId);
+export const firebaseConfigurado = Boolean(
+  configuracion.apiKey && configuracion.projectId && configuracion.appId,
+);
 
-let appPromise: Promise<FirebaseApp> | null = null;
+let promesaApp: Promise<FirebaseApp> | null = null;
 
-/** Carga Firebase de forma perezosa: no entra al bundle inicial ni bloquea el arranque. */
-async function getApp(): Promise<FirebaseApp> {
-  if (!appPromise) {
-    appPromise = (async () => {
+/** Carga perezosa: el SDK no entra al bundle inicial ni retrasa el arranque. */
+async function obtenerApp(): Promise<FirebaseApp> {
+  if (!promesaApp) {
+    promesaApp = (async () => {
       const { getApps, initializeApp } = await import("firebase/app");
-      const existing = getApps();
-      return existing.length ? existing[0] : initializeApp(config as Record<string, string>);
+      const existentes = getApps();
+      return existentes.length
+        ? existentes[0]
+        : initializeApp(configuracion as Record<string, string>);
     })();
   }
-  return appPromise;
+  return promesaApp;
 }
 
-export async function getDb() {
+export async function obtenerFirestore() {
   const { getFirestore } = await import("firebase/firestore");
-  return getFirestore(await getApp());
+  return getFirestore(await obtenerApp());
 }

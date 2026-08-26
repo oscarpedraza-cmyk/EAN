@@ -6,13 +6,13 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Co-piloto de Mentoría · Auditoría exprés de 20 minutos",
+  title: "Mentoría 2 · Evidencia, métricas y decisiones",
   description:
-    "Tablero para mentorías exprés: cronómetro de 20 minutos, auditoría de evidencia con IA y ficha de cierre en PDF.",
+    "Tablero de la Ruta de Crecimiento Inteligente: audita la evidencia, interpreta las métricas y define el segundo ciclo de ejecución.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#070b14",
+  themeColor: "#042433",
   width: "device-width",
   initialScale: 1,
 };
