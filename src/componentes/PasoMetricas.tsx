@@ -46,7 +46,7 @@ export default function PasoMetricas({ filas, alCambiar, alAgregar, alQuitar, ac
             type="button"
             title={s.pregunta}
             onClick={() => alAgregar({ metrica: s.metrica, definicion: s.pregunta })}
-            className="pastilla border-white/10 bg-white/[0.03] text-pizarra transition hover:border-cian/50 hover:text-cian-claro"
+            className="pastilla border-casco-700 bg-casco-950/5 text-pizarra transition hover:border-cian/50 hover:text-cian"
           >
             {s.pregunta}
           </button>
@@ -58,7 +58,7 @@ export default function PasoMetricas({ filas, alCambiar, alAgregar, alQuitar, ac
           const sinUmbral = !fila.umbral.trim() && Boolean(fila.metrica.trim());
           const sinFuente = !fila.fuente.trim() && Boolean(fila.metrica.trim());
           return (
-            <div key={fila.id} className="rounded-xl border border-white/[0.08] bg-casco-950/40 p-3.5">
+            <div key={fila.id} className="rounded-xl border border-casco-700 bg-casco-950/5 p-3.5">
               <div className="mb-2.5 flex items-center gap-2">
                 <span className="font-mono text-[11px] text-pizarra">
                   Métrica {String(indice + 1).padStart(2, "0")}
@@ -80,7 +80,7 @@ export default function PasoMetricas({ filas, alCambiar, alAgregar, alQuitar, ac
                   <label className="rotulo">Métrica</label>
                   <input
                     className="campo"
-                    placeholder="Porcentaje que compra o paga"
+                    placeholder="Ej: % de usuarios que completan primer pedido"
                     value={fila.metrica}
                     onChange={(e) => alCambiar(fila.id, { metrica: e.target.value })}
                   />
@@ -89,7 +89,7 @@ export default function PasoMetricas({ filas, alCambiar, alAgregar, alQuitar, ac
                   <label className="rotulo">Definición</label>
                   <input
                     className="campo"
-                    placeholder="Qué cuenta exactamente como una compra."
+                    placeholder="Ej: Usuario que inicia sesión, añade algo y paga"
                     value={fila.definicion}
                     onChange={(e) => alCambiar(fila.id, { definicion: e.target.value })}
                   />
@@ -97,10 +97,10 @@ export default function PasoMetricas({ filas, alCambiar, alAgregar, alQuitar, ac
               </div>
 
               <div className="mt-3">
-                <label className="rotulo">Fuente</label>
+                <label className="rotulo">Fuente y verificación</label>
                 <input
                   className={`campo ${sinFuente ? "border-ladrillo/45" : ""}`}
-                  placeholder="De dónde sale el número y quién puede verificarlo."
+                  placeholder="Ej: Base de datos de pedidos / Dashboard de Analytics"
                   value={fila.fuente}
                   onChange={(e) => alCambiar(fila.id, { fuente: e.target.value })}
                 />
@@ -108,19 +108,19 @@ export default function PasoMetricas({ filas, alCambiar, alAgregar, alQuitar, ac
 
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div>
-                  <label className="rotulo">Línea base</label>
+                  <label className="rotulo">Valor hoy</label>
                   <input
                     className="campo tabular"
-                    placeholder="8%"
+                    placeholder="Ej: 12%"
                     value={fila.lineaBase}
                     onChange={(e) => alCambiar(fila.id, { lineaBase: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="rotulo">Umbral previo</label>
+                  <label className="rotulo">Meta</label>
                   <input
                     className={`campo tabular ${sinUmbral ? "border-ladrillo/45" : ""}`}
-                    placeholder="20%"
+                    placeholder="Ej: 25%"
                     value={fila.umbral}
                     onChange={(e) => alCambiar(fila.id, { umbral: e.target.value })}
                   />
@@ -129,7 +129,7 @@ export default function PasoMetricas({ filas, alCambiar, alAgregar, alQuitar, ac
                   <label className="rotulo">Resultado</label>
                   <input
                     className="campo tabular"
-                    placeholder="8 de 30"
+                    placeholder="Ej: 18 de 50"
                     value={fila.resultado}
                     onChange={(e) => alCambiar(fila.id, { resultado: e.target.value })}
                   />
@@ -147,7 +147,7 @@ export default function PasoMetricas({ filas, alCambiar, alAgregar, alQuitar, ac
         })}
       </div>
 
-      <p className="mt-3 rounded-lg border border-white/[0.07] bg-white/[0.02] px-3 py-2 text-[11px] leading-relaxed text-pizarra">
+      <p className="mt-3 rounded-lg border border-casco-700 bg-casco-950/5 px-3 py-2 text-[11px] leading-relaxed text-pizarra">
         Una métrica sirve cuando su resultado cambia lo que van a hacer la semana siguiente.
       </p>
     </Paso>

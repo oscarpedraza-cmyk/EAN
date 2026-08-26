@@ -32,7 +32,7 @@ export default function PasoEjecucion({ valor, alCambiar, activo }: Props) {
 
   const fantasma = (campo: string) =>
     parcial[campo] ? (
-      <p className="mt-1 truncate text-[11px] italic text-cian-claro/70">…{parcial[campo]}</p>
+      <p className="mt-1 truncate text-[11px] italic text-cian/70">…{parcial[campo]}</p>
     ) : null;
 
   const completo = Boolean(valor.loEjecutado.trim());

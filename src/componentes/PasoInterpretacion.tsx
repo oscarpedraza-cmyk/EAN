@@ -79,9 +79,9 @@ export default function PasoInterpretacion({
       )}
 
       {!interpretacion && !cargando && (
-        <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/10 px-6 py-10 text-center">
+        <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-casco-700 px-6 py-10 text-center">
           <ScanSearch className="h-7 w-7 text-pizarra-oscuro" />
-          <p className="text-sm font-semibold text-slate-300">Sin auditar todavía</p>
+          <p className="text-sm font-semibold text-pizarra">Sin auditar todavía</p>
           <p className="max-w-sm text-xs leading-relaxed text-pizarra">
             Registren lo ejecutado y al menos una acción con su soporte. La auditoría califica cada
             evidencia, localiza el bloqueo y revisa si el segundo ciclo podrá decidir algo.
@@ -92,7 +92,7 @@ export default function PasoInterpretacion({
       {cargando && !interpretacion && (
         <div className="grid gap-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-16 animate-pulse rounded-xl bg-white/[0.04]" />
+            <div key={i} className="h-16 animate-pulse rounded-xl bg-casco-700/40" />
           ))}
         </div>
       )}
@@ -106,7 +106,7 @@ export default function PasoInterpretacion({
             </p>
           )}
           <Medidor valor={interpretacion.confiabilidadGlobal} estado={interpretacion.estadoGlobal} />
-          <p className="text-sm leading-relaxed text-slate-300">{interpretacion.lecturaGeneral}</p>
+          <p className="text-sm leading-relaxed text-pizarra">{interpretacion.lecturaGeneral}</p>
 
           <div>
             <p className="rotulo">
@@ -122,8 +122,8 @@ export default function PasoInterpretacion({
                     title={`Grupo: ${grupo}`}
                     className={`pastilla ${
                       encendido
-                        ? "border-cian bg-cian/20 text-cian-claro"
-                        : "border-white/[0.08] bg-white/[0.02] text-pizarra-oscuro"
+                        ? "border-cian/60 bg-cian/15 text-cian"
+                        : "border-casco-700 bg-casco-950/5 text-pizarra"
                     }`}
                   >
                     {ROTULO_BLOQUEO[clave]}
@@ -164,7 +164,7 @@ export default function PasoInterpretacion({
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-menta">
                 Aprendizaje protegido
               </p>
-              <p className="mt-1 text-sm leading-relaxed text-slate-300">
+              <p className="mt-1 text-sm leading-relaxed text-pizarra">
                 {interpretacion.aprendizajeRescatado}
               </p>
             </div>
@@ -179,9 +179,9 @@ export default function PasoInterpretacion({
               {interpretacion.preguntasMentor.map((p, i) => (
                 <blockquote
                   key={i}
-                  className="rounded-xl border border-white/10 bg-white/[0.03] p-3.5 text-[17px] font-semibold leading-snug text-slate-100"
+                  className="rounded-xl border border-casco-700 bg-casco-950/5 p-3.5 text-[17px] font-semibold leading-snug text-pizarra-oscuro"
                 >
-                  <span className="mr-1.5 font-mono text-xs text-cian-claro">0{i + 1}</span>
+                  <span className="mr-1.5 font-mono text-xs text-cian">0{i + 1}</span>
                   {p}
                 </blockquote>
               ))}
@@ -217,7 +217,7 @@ export default function PasoInterpretacion({
               </span>
             </div>
 
-            <p className="mt-2.5 text-sm leading-relaxed text-slate-300">
+            <p className="mt-2.5 text-sm leading-relaxed text-pizarra">
               {interpretacion.preMortem.muestraMinima}
             </p>
             {interpretacion.preMortem.advertencia && (
@@ -240,7 +240,7 @@ export default function PasoInterpretacion({
               ).map(([clave, valor, color]) => (
                 <div
                   key={clave}
-                  className="rounded-lg border border-white/[0.07] bg-casco-950/50 px-3 py-2 text-xs leading-relaxed text-slate-300"
+                  className="rounded-lg border border-casco-700 bg-casco-950/5 px-3 py-2 text-xs leading-relaxed text-pizarra"
                 >
                   <span className={`font-bold ${color}`}>{clave}: </span>
                   {valor}
@@ -249,8 +249,8 @@ export default function PasoInterpretacion({
             </div>
 
             {interpretacion.preMortem.variableACambiar && (
-              <p className="mt-2.5 text-xs leading-relaxed text-slate-300">
-                <span className="font-semibold text-slate-100">Variable a cambiar: </span>
+              <p className="mt-2.5 text-xs leading-relaxed text-pizarra">
+                <span className="font-semibold text-pizarra-oscuro">Variable a cambiar: </span>
                 {interpretacion.preMortem.variableACambiar}
               </p>
             )}

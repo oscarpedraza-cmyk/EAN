@@ -80,8 +80,8 @@ export default function PasoEvidencia({
           return (
             <div
               key={fila.id}
-              className={`rounded-xl border bg-casco-950/40 p-3.5 transition ${
-                sinSoporte ? "border-ladrillo/35" : "border-white/[0.08]"
+              className={`rounded-xl border bg-casco-950/5 p-3.5 transition ${
+                sinSoporte ? "border-ladrillo/35" : "border-casco-700"
               }`}
             >
               <div className="mb-2.5 flex items-center gap-2">
@@ -118,7 +118,7 @@ export default function PasoEvidencia({
                     onChange={(e) => alCambiar(fila.id, { accion: e.target.value })}
                   />
                   {parcial[`${fila.id}-accion`] && (
-                    <p className="mt-1 truncate text-[11px] italic text-cian-claro/70">
+                    <p className="mt-1 truncate text-[11px] italic text-cian/70">
                       …{parcial[`${fila.id}-accion`]}
                     </p>
                   )}
@@ -179,7 +179,7 @@ export default function PasoEvidencia({
                           className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition active:scale-[.97] ${
                             encendido
                               ? tono.activo
-                              : "border-white/10 text-pizarra hover:border-white/25 hover:text-slate-300"
+                              : "border-casco-700 text-pizarra hover:border-casco-600 hover:text-pizarra-oscuro"
                           }`}
                         >
                           <span className={`h-2 w-2 rounded-full ${tono.punto}`} />
