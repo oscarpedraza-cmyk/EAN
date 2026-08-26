@@ -258,14 +258,8 @@ export default function PasoCierre({
           </button>
           <button type="button" onClick={alGuardar} disabled={guardando} className="boton-tenue">
             {guardando ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            Guardar
+            Descargar PDF
           </button>
-          {guardadoEn && !guardando && (
-            <span className="pastilla self-center border-menta/30 bg-menta/10 text-menta">
-              <Check className="h-3 w-3" />
-              Guardado en {guardadoEn === "firestore" ? "Firestore" : "este navegador"}
-            </span>
-          )}
         </div>
 
         <p className="text-[11px] leading-relaxed text-pizarra">

@@ -160,8 +160,11 @@ export default function Inicio() {
 
   const exportar = useCallback(async () => {
     await generarFicha(encuentro);
-    void guardar();
-  }, [encuentro, guardar]);
+  }, [encuentro]);
+
+  const descargarPDF = useCallback(async () => {
+    await generarFicha(encuentro);
+  }, [encuentro]);
 
   const enviarCorreo = useCallback(() => {
     const asunto = `Mentoría 2 — ${encuentro.ejecucion.equipo || "Equipo"}`;
@@ -274,8 +277,8 @@ export default function Inicio() {
               disenoRevisado={Boolean(interpretacion) && !desactualizada}
               alExportar={exportar}
               alEnviar={enviarCorreo}
-              alGuardar={guardar}
-              guardando={guardando}
+              alGuardar={descargarPDF}
+              guardando={false}
               guardadoEn={guardadoEn}
               firebaseListo={firebaseConfigurado}
               activo={true}
