@@ -194,86 +194,124 @@ export default function Inicio() {
         alReiniciar={tiempo.reiniciar}
       />
 
-      {/* Dos columnas independientes: en móvil se apilan y dan el orden 01→05 sin huecos. */}
-      <main className="mx-auto grid max-w-7xl items-start gap-3.5 px-4 py-4 lg:grid-cols-2">
-        <div className="flex flex-col gap-3.5">
-          <PasoEjecucion
-            valor={ejecucion}
-            alCambiar={(parche) => {
-              setEjecucion((v) => ({ ...v, ...parche }));
-              setGuardadoEn(null);
-            }}
-            activo={pasoActivo === "ejecucion"}
-          />
+      {/* Carrusel: una etapa por pantalla */}
+      <main className="mx-auto w-full max-w-3xl px-4 py-4">
+        <div className="min-h-[calc(100vh-16rem)] animate-entrada">
+          {pasoActivo === "ejecucion" && (
+            <PasoEjecucion
+              valor={ejecucion}
+              alCambiar={(parche) => {
+                setEjecucion((v) => ({ ...v, ...parche }));
+                setGuardadoEn(null);
+              }}
+              activo={true}
+            />
+          )}
 
-          <PasoEvidencia
-            filas={evidencias}
-            lecturas={interpretacion?.lecturas ?? []}
-            alCambiar={(idFila, parche) =>
-              setEvidencias((filas) => filas.map((f) => (f.id === idFila ? { ...f, ...parche } : f)))
-            }
-            alAgregar={() => setEvidencias((filas) => [...filas, filaEvidenciaVacia()])}
-            alQuitar={(idFila) => setEvidencias((filas) => filas.filter((f) => f.id !== idFila))}
-            activo={pasoActivo === "evidencia"}
-          />
+          {pasoActivo === "evidencia" && (
+            <PasoEvidencia
+              filas={evidencias}
+              lecturas={interpretacion?.lecturas ?? []}
+              alCambiar={(idFila, parche) =>
+                setEvidencias((filas) => filas.map((f) => (f.id === idFila ? { ...f, ...parche } : f)))
+              }
+              alAgregar={() => setEvidencias((filas) => [...filas, filaEvidenciaVacia()])}
+              alQuitar={(idFila) => setEvidencias((filas) => filas.filter((f) => f.id !== idFila))}
+              activo={true}
+            />
+          )}
 
-          <PasoMetricas
-            filas={metricas}
-            alCambiar={(idFila, parche) =>
-              setMetricas((filas) => filas.map((m) => (m.id === idFila ? { ...m, ...parche } : m)))
-            }
-            alAgregar={(semilla) =>
-              setMetricas((filas) => {
-                if (!semilla) return [...filas, filaMetricaVacia()];
-                // Una sugerencia llena la primera fila en blanco antes de crear otra.
-                const vacia = filas.findIndex((m) => !m.metrica.trim() && !m.fuente.trim());
-                if (vacia >= 0) {
-                  return filas.map((m, i) => (i === vacia ? { ...m, ...semilla } : m));
-                }
-                return [...filas, { ...filaMetricaVacia(), ...semilla }];
-              })
-            }
-            alQuitar={(idFila) => setMetricas((filas) => filas.filter((m) => m.id !== idFila))}
-            activo={pasoActivo === "metricas"}
-          />
+          {pasoActivo === "metricas" && (
+            <PasoMetricas
+              filas={metricas}
+              alCambiar={(idFila, parche) =>
+                setMetricas((filas) => filas.map((m) => (m.id === idFila ? { ...m, ...parche } : m)))
+              }
+              alAgregar={(semilla) =>
+                setMetricas((filas) => {
+                  if (!semilla) return [...filas, filaMetricaVacia()];
+                  const vacia = filas.findIndex((m) => !m.metrica.trim() && !m.fuente.trim());
+                  if (vacia >= 0) {
+                    return filas.map((m, i) => (i === vacia ? { ...m, ...semilla } : m));
+                  }
+                  return [...filas, { ...filaMetricaVacia(), ...semilla }];
+                })
+              }
+              alQuitar={(idFila) => setMetricas((filas) => filas.filter((m) => m.id !== idFila))}
+              activo={true}
+            />
+          )}
+
+          {pasoActivo === "bloqueo" && (
+            <PasoInterpretacion
+              interpretacion={interpretacion}
+              cargando={cargando}
+              error={error}
+              aviso={aviso}
+              desactualizada={desactualizada}
+              puedeInterpretar={puedeInterpretar}
+              alInterpretar={() => {
+                setPasoActivo("bloqueo");
+                void auditar();
+              }}
+              activo={true}
+            />
+          )}
+
+          {pasoActivo === "ciclo" && (
+            <PasoCierre
+              encuentro={encuentro}
+              alDecidir={(valor) => {
+                setDecision(valor);
+                setPasoActivo("ciclo");
+                setGuardadoEn(null);
+              }}
+              alSustentar={setSustentoDecision}
+              alCambiarCiclo={(parche) => setSegundoCiclo((v) => ({ ...v, ...parche }))}
+              alMarcar={(idCheck, valor) => setChequeo((c) => ({ ...c, [idCheck]: valor }))}
+              alRevisarDiseno={() => void auditar()}
+              revisando={cargando}
+              disenoRevisado={Boolean(interpretacion) && !desactualizada}
+              alExportar={exportar}
+              alEnviar={enviarCorreo}
+              alGuardar={guardar}
+              guardando={guardando}
+              guardadoEn={guardadoEn}
+              firebaseListo={firebaseConfigurado}
+              activo={true}
+            />
+          )}
         </div>
 
-        <div className="flex flex-col gap-3.5">
-          <PasoInterpretacion
-            interpretacion={interpretacion}
-            cargando={cargando}
-            error={error}
-            aviso={aviso}
-            desactualizada={desactualizada}
-            puedeInterpretar={puedeInterpretar}
-            alInterpretar={() => {
-              setPasoActivo("bloqueo");
-              void auditar();
+        {/* Botones de navegación */}
+        <div className="mt-8 flex items-center justify-between gap-3 border-t border-casco-700 pt-6">
+          <button
+            onClick={() => {
+              const pasos: PasoId[] = ["ejecucion", "evidencia", "metricas", "bloqueo", "ciclo"];
+              const actual = pasos.indexOf(pasoActivo);
+              if (actual > 0) setPasoActivo(pasos[actual - 1]);
             }}
-            activo={pasoActivo === "bloqueo"}
-          />
+            disabled={pasoActivo === "ejecucion"}
+            className="rounded-lg bg-casco-600 px-6 py-2 font-medium text-pizarra-oscuro transition disabled:opacity-40 hover:disabled:opacity-40 enabled:hover:bg-casco-700"
+          >
+            ← Anterior
+          </button>
 
-          <PasoCierre
-            encuentro={encuentro}
-            alDecidir={(valor) => {
-              setDecision(valor);
-              setPasoActivo("ciclo");
-              setGuardadoEn(null);
+          <span className="text-sm font-medium text-pizarra">
+            {["ejecucion", "evidencia", "metricas", "bloqueo", "ciclo"].indexOf(pasoActivo) + 1} de 5
+          </span>
+
+          <button
+            onClick={() => {
+              const pasos: PasoId[] = ["ejecucion", "evidencia", "metricas", "bloqueo", "ciclo"];
+              const actual = pasos.indexOf(pasoActivo);
+              if (actual < pasos.length - 1) setPasoActivo(pasos[actual + 1]);
             }}
-            alSustentar={setSustentoDecision}
-            alCambiarCiclo={(parche) => setSegundoCiclo((v) => ({ ...v, ...parche }))}
-            alMarcar={(idCheck, valor) => setChequeo((c) => ({ ...c, [idCheck]: valor }))}
-            alRevisarDiseno={() => void auditar()}
-            revisando={cargando}
-            disenoRevisado={Boolean(interpretacion) && !desactualizada}
-            alExportar={exportar}
-            alEnviar={enviarCorreo}
-            alGuardar={guardar}
-            guardando={guardando}
-            guardadoEn={guardadoEn}
-            firebaseListo={firebaseConfigurado}
-            activo={pasoActivo === "ciclo"}
-          />
+            disabled={pasoActivo === "ciclo"}
+            className="rounded-lg bg-cian px-6 py-2 font-medium text-white transition disabled:opacity-40 hover:disabled:opacity-40 enabled:hover:bg-cian-claro"
+          >
+            Siguiente →
+          </button>
         </div>
       </main>
 

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
@@ -12,10 +12,10 @@ body {
 }
 
 body {
-  @apply bg-casco-950 text-slate-200 antialiased;
+  @apply bg-white text-pizarra-oscuro antialiased;
   background-image:
-    radial-gradient(55rem 38rem at 12% -12%, rgba(10, 127, 160, 0.13), transparent 62%),
-    radial-gradient(45rem 32rem at 92% -4%, rgba(0, 212, 148, 0.07), transparent 58%);
+    radial-gradient(55rem 38rem at 12% -12%, rgba(13, 124, 168, 0.06), transparent 62%),
+    radial-gradient(45rem 32rem at 92% -4%, rgba(22, 163, 74, 0.04), transparent 58%);
   background-attachment: fixed;
 }
 
@@ -26,15 +26,15 @@ body {
 
 @layer components {
   .tarjeta {
-    @apply rounded-2xl border border-white/10 bg-casco-900/70 backdrop-blur;
+    @apply rounded-2xl border border-casco-700 bg-casco-950/5 backdrop-blur;
   }
   .campo {
-    @apply w-full rounded-lg border border-white/10 bg-casco-950/70 px-3 py-2 text-[14px] text-slate-100
-           placeholder:text-slate-600 outline-none transition
-           focus:border-cian/70 focus:ring-2 focus:ring-cian/25;
+    @apply w-full rounded-lg border border-casco-700 bg-white px-3 py-2 text-[14px] text-pizarra-oscuro
+           placeholder:text-pizarra outline-none transition
+           focus:border-cian focus:ring-2 focus:ring-cian/20;
   }
   .rotulo {
-    @apply mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-pizarra;
+    @apply mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-pizarra-oscuro;
   }
   .boton {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold
@@ -44,13 +44,13 @@ body {
     @apply boton bg-cian text-white hover:bg-cian-claro;
   }
   .boton-menta {
-    @apply boton bg-menta text-casco-950 hover:bg-menta/85;
+    @apply boton bg-menta text-white hover:bg-menta/90;
   }
   .boton-tenue {
-    @apply boton border border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.08];
+    @apply boton border border-casco-700 bg-casco-950/5 text-pizarra-oscuro hover:bg-casco-950/10;
   }
   .pastilla {
-    @apply inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-semibold;
+    @apply inline-flex items-center gap-1.5 rounded-full border border-casco-700 px-2 py-0.5 text-[10px] font-semibold;
   }
 }
 
@@ -59,8 +59,8 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-white/10;
+  @apply rounded-full bg-cian/30;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-white/20;
+  @apply bg-cian/50;
 }

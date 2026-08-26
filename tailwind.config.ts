@@ -11,21 +11,21 @@ const config: Config = {
       },
       colors: {
         casco: {
-          950: "#02161f",
-          900: "#042433",
-          800: "#0a3243",
-          700: "#124256",
-          600: "#1c5670",
+          950: "#f8f9fa",
+          900: "#f0f2f5",
+          800: "#e8eaed",
+          700: "#e0e2e6",
+          600: "#d8dadd",
         },
         cian: {
-          DEFAULT: "#0a7fa0",
-          claro: "#3aa8c4",
-          tenue: "#c9d8de",
+          DEFAULT: "#0d7ca8",
+          claro: "#4ba3c7",
+          tenue: "#b3d9e8",
         },
-        menta: { DEFAULT: "#00d494", oscuro: "#2f7049" },
-        ladrillo: { DEFAULT: "#be4b4b", claro: "#e28a8a" },
-        ambar: { DEFAULT: "#e0a33c" },
-        pizarra: { DEFAULT: "#7a8a92", oscuro: "#4a5c66" },
+        menta: { DEFAULT: "#16a34a", oscuro: "#15803d" },
+        ladrillo: { DEFAULT: "#dc2626", claro: "#f87171" },
+        ambar: { DEFAULT: "#d97706" },
+        pizarra: { DEFAULT: "#4b5563", oscuro: "#1f2937" },
       },
       keyframes: {
         entrada: {
