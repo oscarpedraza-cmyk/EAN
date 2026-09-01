@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -28,18 +29,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
 
             <div className="flex items-center gap-2 text-sm">
-              <a
+              <Link
                 href="/"
                 className="rounded-lg px-3 py-2 font-medium transition hover:bg-casco-950/5"
               >
                 📋 Mentoría 2
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/prototipado"
                 className="rounded-lg px-3 py-2 font-medium transition hover:bg-casco-950/5"
               >
                 🚀 Prototipado
-              </a>
+              </Link>
             </div>
           </div>
         </nav>

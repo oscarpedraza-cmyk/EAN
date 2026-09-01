@@ -367,7 +367,7 @@ export default function Prototipado() {
 
                       {h.cita && (
                         <p className="mt-1 text-xs italic text-pizarra">
-                          💬 "{h.cita}"
+                          💬 &quot;{h.cita}&quot;
                         </p>
                       )}
 
