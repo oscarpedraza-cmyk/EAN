@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 2 Junior: Costos + Dinero (Simplificado)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0d7ca8;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --light: #f0f9ff;
+            --dark: #1f2937;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            font-size: 15px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: var(--primary);
+            margin: 40px 0 25px 0;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--success);
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, var(--light) 0%, #e0f2fe 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .intro-box h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .intro-box p {
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, var(--light) 0%, #e0f2fe 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .question-block {
+            background: white;
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .question {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .respuestas {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .respuesta-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .respuesta-btn:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+
+        .respuesta-btn.selected {
+            background: linear-gradient(135deg, var(--light) 0%, #e0f2fe 100%);
+            border-color: var(--primary);
+        }
+
+        .explicacion {
+            display: none;
+            background: #f0f9ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin-top: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .explicacion.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lista-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .item {
+            background: white;
+            border-left: 4px solid var(--success);
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .item-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .item-warning {
+            background: #fef3c7;
+            border-left-color: var(--warning);
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 12px;
+            color: #92400e;
+        }
+
+        .table-simple {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+
+        .table-simple th {
+            background: var(--light);
+            color: var(--primary);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary);
+            font-size: 13px;
+        }
+
+        .table-simple td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+        }
+
+        .table-simple tr:hover {
+            background: #f9fafb;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .tip-box strong {
+            color: #92400e;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .tip-box p {
+            color: #92400e;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .action-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            margin-top: 15px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 124, 168, 0.3);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 50px;
+            width: 2px;
+            height: calc(100% + 30px);
+            background: #e5e7eb;
+        }
+
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: white;
+            border-left: 3px solid var(--primary);
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .timeline-content strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .timeline-content p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .emoji-big {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>💰 Módulo 2: Costos y Dinero (Junior)</h1>
+        <p>Para startups que acaban de validar y no saben "cuánto cuesta esto"</p>
+    </header>
+
+    <div class="content">
+
+        <!-- INTRO -->
+        <div class="intro-box">
+            <h3>🎯 ¿Qué aprenderás?</h3>
+            <p>✅ Qué costos tiene TU INICIATIVA (app, servicio, producto, plataforma... lo que sea)</p>
+            <p>✅ Cuánto deberías cobrar (y por qué)</p>
+            <p>✅ Cuándo es "demasiado caro" (red flag)</p>
+            <p>✅ Qué preguntas hacer a un contador</p>
+            <p style="margin-top: 15px; font-size: 12px; color: #0d7ca8; font-weight: 600;">💡 Funciona para: Apps • Servicios • Productos físicos • Plataformas • Consultoría • Lo que sea</p>
+        </div>
+
+        <!-- SECCIÓN 1: PURA EDUCACIÓN -->
+        <h2 class="section-title">📚 Primero: Entender qué son "costos"</h2>
+
+        <div class="card">
+            <h3>Los 3 tipos de costos (punto)</h3>
+            <div class="lista-items">
+                <div class="item">
+                    <div class="item-title">🚀 Costos de Inicio (una sola vez)</div>
+                    <div class="item-desc"><strong>App:</strong> Hacer app ($3K), diseño ($1K), dominio ($100)</div>
+                    <div class="item-desc"><strong>Servicio:</strong> Equipamiento ($500-2K), certificaciones ($100-500)</div>
+                    <div class="item-desc"><strong>Producto físico:</strong> Molde/prototipo ($1K-10K), primeras unidades ($1-5K)</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Total año 1:</strong> ~$2,000-10,000+ si contratas ayuda</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Total año 1 (si lo haces tú):</strong> $0-2K + tu tiempo</div>
+                </div>
+
+                <div class="item">
+                    <div class="item-title">💸 Costos Mensuales (operación)</div>
+                    <div class="item-desc"><strong>App:</strong> Servidor, base de datos, API ($200-2000/mes)</div>
+                    <div class="item-desc"><strong>Servicio:</strong> Local/oficina, herramientas, software ($300-1500/mes)</div>
+                    <div class="item-desc"><strong>Producto físico:</strong> Manufactura, almacenamiento, envío ($500-5000/mes)</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Rango típico:</strong> $200-2000/mes al inicio, más cuando creces</div>
+                </div>
+
+                <div class="item">
+                    <div class="item-title">👥 Costos de Operar (personas + marketing)</div>
+                    <div class="item-desc">Lo que gastas en gente y en conseguir clientes.</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Ejemplos:</strong> Tu salario, empleados, ads, viajes, eventos, redes sociales.</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Rango típico:</strong> $0/mes (si no te pagas) a $5000+/mes (si tienes equipo)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: PREGUNTAS CLAVE -->
+        <h2 class="section-title">❓ Segundo: Las preguntas que DEBES hacer</h2>
+
+        <div class="card">
+            <p style="color: #666; margin-bottom: 20px; font-size: 13px;">No necesitas respuestas exactas aún. Solo piensa en cada una:</p>
+
+            <div class="question-block">
+                <div class="question">1️⃣ ¿Quién hizo / hace tu producto/servicio?</div>
+                <div class="respuestas">
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q1-a')">
+                        💪 Yo lo hice (MVP casero)
+                    </button>
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q1-b')">
+                        👨‍💼 Contraté a un freelancer/proveedor
+                    </button>
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q1-c')">
+                        🏢 Contraté una agencia/estudio
+                    </button>
+                </div>
+                <div class="explicacion" id="q1-a">
+                    <strong>TÚ:</strong> Gratis en $$ pero costó tu tiempo (no es gratis de verdad). Siguiente costo: mantenerlo vs hacer nuevas cosas.
+                </div>
+                <div class="explicacion" id="q1-b">
+                    <strong>FREELANCER:</strong> Pagaste $1-5K probablemente. Ya está. Ahora el costo es mantener/mejorar.
+                </div>
+                <div class="explicacion" id="q1-c">
+                    <strong>AGENCIA:</strong> Pagaste $5K+. Caro para MVP. Inversionistas preguntarán "¿por qué tanto?". Pero si es muy complejo, a veces necesario.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question">2️⃣ ¿Cuántos clientes/usuarios/ventas tienes AHORA?</div>
+                <div class="respuestas">
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q2-a')">
+                        👥 1-10 (yo + amigos)
+                    </button>
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q2-b')">
+                        👥 10-50
+                    </button>
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q2-c')">
+                        👥 50+
+                    </button>
+                </div>
+                <div class="explicacion" id="q2-a">
+                    <strong>COSTO MENSUAL ESTIMADO:</strong> $200-500. Muy bajo. Mantén gastos mínimos.
+                </div>
+                <div class="explicacion" id="q2-b">
+                    <strong>COSTO MENSUAL ESTIMADO:</strong> $300-1000. Empiezas a pagar más por infraestructura/personal.
+                </div>
+                <div class="explicacion" id="q2-c">
+                    <strong>COSTO MENSUAL ESTIMADO:</strong> $800-3000+. Ya necesitas sistemas serios. Gastos escalan.
+                </div>
+            </div>
+
+            <div class="question-block">
+                <div class="question">3️⃣ ¿Cómo vas a COBRAR?</div>
+                <div class="respuestas">
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q3-a')">
+                        💰 Aún no sé (gratis por ahora)
+                    </button>
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q3-b')">
+                        💰 Suscripción mensual ($5-50/mes)
+                    </button>
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q3-c')">
+                        💰 Pago por compra/servicio ($5-500 one-time)
+                    </button>
+                    <button class="respuesta-btn" onclick="toggleRespuesta(this, 'q3-d')">
+                        💰 Modelo híbrido/comisión
+                    </button>
+                </div>
+                <div class="explicacion" id="q3-a">
+                    <strong>⚠️ PROBLEMA:</strong> Si no sabes cómo ganar dinero, ¿quién pagará? Necesitas modelo YA. No esperes.
+                </div>
+                <div class="explicacion" id="q3-b">
+                    <strong>BUENO:</strong> Es predecible. Necesitas ~30-100 clientes mensuales para cubrir costos según precio.
+                </div>
+                <div class="explicacion" id="q3-c">
+                    <strong>REQUIERE VOLUMEN:</strong> Si cobras $20, necesitas ~25-50 ventas/mes. ¿Es realista?
+                </div>
+                <div class="explicacion" id="q3-d">
+                    <strong>INTELIGENTE:</strong> Combina lo mejor. Ej: Plan gratis + premium, o comisión por transacción.
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: TABLA COMPARATIVA SIMPLE -->
+        <h2 class="section-title">📊 Tercero: ¿A mí qué me toca?</h2>
+
+        <div class="card">
+            <p style="color: #666; margin-bottom: 20px; font-size: 13px;">Aquí está resumido para tu tipo de startup:</p>
+
+            <table class="table-simple">
+                <thead>
+                    <tr>
+                        <th>Mi situación</th>
+                        <th>Costo inicial</th>
+                        <th>Costo mensual</th>
+                        <th>Qué hacer AHORA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Yo lo hice (MVP)</strong><br>1-10 clientes</td>
+                        <td>$0-1K</td>
+                        <td>$200-500</td>
+                        <td>✅ Haz que 10-20 clientes paguen = cubre costos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contraté ayuda</strong><br>10-50 clientes</td>
+                        <td>$2-5K</td>
+                        <td>$500-1.5K</td>
+                        <td>✅ Consigue 50-100 clientes pagando = cubre todo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Equipo completo</strong><br>50+ clientes</td>
+                        <td>$5K+</td>
+                        <td>$1.5K-3K</td>
+                        <td>⚠️ Necesitas inversión o crecer MUY rápido</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECCIÓN 4: LA PREGUNTA CRÍTICA -->
+        <h2 class="section-title">🎯 Cuarto: La pregunta más importante</h2>
+
+        <div class="tip-box">
+            <strong>❓ Si 1 usuario paga $10, ¿cuántos necesitas?</strong>
+            <p><strong>Ejemplo:</strong> Si gastas $500/mes:</p>
+            <p>• Si cobras $5 por usuario: necesitas <strong>100 usuarios</strong></p>
+            <p>• Si cobras $10 por usuario: necesitas <strong>50 usuarios</strong></p>
+            <p>• Si cobras $50 por usuario: necesitas <strong>10 usuarios</strong></p>
+            <p style="margin-top: 15px;"><strong>Pregunta real:</strong> ¿Es realista conseguir X usuarios en 3-6 meses? Si no, tu modelo no funciona aún.</p>
+        </div>
+
+        <!-- SECCIÓN 5: RED FLAGS -->
+        <h2 class="section-title">⚠️ Quinto: Señales de alerta</h2>
+
+        <div class="card">
+            <div class="lista-items">
+                <div class="item">
+                    <div class="item-title">🚨 "Costo inicial = $20K+"</div>
+                    <div class="item-desc">Para un MVP, es MUCHO. Significa que o gastaste mal, o fue agencia. Para validación, no necesitas tanto.</div>
+                    <div class="item-warning">👉 Acción: Negocia rebaja o haz el MVP más pequeño aún</div>
+                </div>
+
+                <div class="item">
+                    <div class="item-title">🚨 "Costo mensual = $5000+ pero no tengo usuarios"</div>
+                    <div class="item-desc">Estás quebrando. Costos deben escalar CON usuarios, no antes.</div>
+                    <div class="item-warning">👉 Acción: Reduce a free tier. Espera a tener tracción. URGENTE.</div>
+                </div>
+
+                <div class="item">
+                    <div class="item-title">🚨 "No sé cuánto cuesta cada usuario"</div>
+                    <div class="item-desc">Si no mides costos por usuario, nunca sabrás si tu negocio es viable.</div>
+                    <div class="item-warning">👉 Acción: Cálculo simple = Costo mensual ÷ # usuarios. Hazlo HOY.</div>
+                </div>
+
+                <div class="item">
+                    <div class="item-title">🚨 "No tengo modelo de ingresos"</div>
+                    <div class="item-desc">Gratis está bien para validar (primeros 1-2 meses), pero después necesitas cobrar o levantar inversión.</div>
+                    <div class="item-warning">👉 Acción: Decide precio esta semana. Experimenta. Cóbrale a 5 usuarios.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 6: CHECKLIST PRÁCTICO -->
+        <h2 class="section-title">✅ Mi checklist de ESTA SEMANA</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot">1</div>
+                <div class="timeline-content">
+                    <strong>📝 Listar TODOS los costos actuales</strong>
+                    <p>Hosting, dominio, API, tu tiempo, etc. No necesita ser exacto. "Unos $300/mes" está bien.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot">2</div>
+                <div class="timeline-content">
+                    <strong>💰 Decidir CÓMO cobrar</strong>
+                    <p>Suscripción $9.99/mes, one-time $5, o freemium. Escoge UNO. Justifica por qué.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot">3</div>
+                <div class="timeline-content">
+                    <strong>🎯 Calcular break-even simple</strong>
+                    <p>Costos mensuales ÷ precio = usuarios que necesito. Ejemplo: $300 ÷ $10 = 30 usuarios.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot">4</div>
+                <div class="timeline-content">
+                    <strong>💬 Pregunta a 1 usuario si pagaría</strong>
+                    <p>"Si esto cuesta $9.99/mes, ¿lo pagarías?" La respuesta vale más que cualquier calculadora.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot">5</div>
+                <div class="timeline-content">
+                    <strong>👨‍💼 Habla con contador (si necesario)</strong>
+                    <p>Si vas a cobrar, consulta impuestos. No es caro. Una sesión = $0-100 y evitas problemas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="tip-box" style="margin-top: 40px;">
+            <strong>🚀 Recuerda:</strong>
+            <p>No tienes que saberlo TODO ahora. Los números cambiarán 10 veces. Pero PENSAR en costos desde AHORA te diferencia de 90% de startups que ignoran esto.</p>
+            <p style="margin-top: 10px;">La pregunta no es "¿cuánto me va a costar?" sino "¿vale la pena intentarlo?"</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function toggleRespuesta(btn, id) {
+        // Remover selección anterior en este bloque
+        const parent = btn.closest('.question-block');
+        parent.querySelectorAll('.respuesta-btn').forEach(b => b.classList.remove('selected'));
+        parent.querySelectorAll('.explicacion').forEach(e => e.classList.remove('show'));
+
+        // Agregar nueva selección
+        btn.classList.add('selected');
+        document.getElementById(id).classList.add('show');
+    }
+</script>
+
+</body>
+</html>

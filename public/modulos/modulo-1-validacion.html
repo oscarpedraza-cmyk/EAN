@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación de Prototipado - Formulario Robusto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0d7ca8;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --light: #f0f9ff;
+            --dark: #1f2937;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            font-size: 15px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+
+        header .subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, var(--light) 0%, #e0f2fe 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+
+        .intro-box h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .intro-box p {
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .intro-box ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .intro-box li {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .success-message {
+            display: none;
+            background: #dcfce7;
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #166534;
+            text-align: center;
+            font-weight: 600;
+            animation: slideDown 0.3s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section h2 {
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--success);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-help {
+            background: #fffbeb;
+            border-left: 4px solid var(--warning);
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #92400e;
+            line-height: 1.5;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .label-help {
+            font-size: 11px;
+            font-weight: 400;
+            color: #666;
+            cursor: help;
+            border-bottom: 1px dotted var(--primary);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            padding: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(13, 124, 168, 0.1);
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .example-text {
+            font-size: 12px;
+            color: #999;
+            font-style: italic;
+            margin-top: 6px;
+        }
+
+        .range-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .range-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            cursor: pointer;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to right, #fecaca, #fcd34d, #86efac);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(13, 124, 168, 0.4);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(13, 124, 168, 0.4);
+        }
+
+        .range-value {
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 50px;
+            text-align: center;
+            font-size: 18px;
+            background: var(--light);
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .metric-box {
+            background: linear-gradient(135deg, var(--light) 0%, #e0f2fe 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .metric-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(13, 124, 168, 0.2);
+        }
+
+        .metric-box .emoji {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .metric-box .label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .metric-box .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .importance-badge {
+            display: inline-block;
+            background: var(--danger);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 35px;
+        }
+
+        button {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(13, 124, 168, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(13, 124, 168, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            background: #f3f4f6;
+            color: var(--dark);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-reset:hover {
+            background: #e5e7eb;
+        }
+
+        .records-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 3px solid #e5e7eb;
+        }
+
+        .records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .records-header h2 {
+            font-size: 22px;
+            color: var(--primary);
+            border: none;
+            margin: 0;
+        }
+
+        .records-count {
+            background: var(--light);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .records-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--light) 0%, #e0f2fe 100%);
+            border: 2px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .record-item {
+            background: #fafafa;
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .record-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateX(4px);
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .record-title {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 16px;
+        }
+
+        .record-meta {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .record-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .record-badge {
+            font-size: 11px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .badge-prototipo {
+            background: #f0f9ff;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .badge-intencion-si {
+            background: #dcfce7;
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .badge-intencion-talvez {
+            background: #fef3c7;
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .badge-intencion-no {
+            background: #fee2e2;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .record-content {
+            margin-bottom: 15px;
+        }
+
+        .record-content p {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .record-content strong {
+            color: var(--dark);
+        }
+
+        .record-metrics {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            flex-wrap: wrap;
+        }
+
+        .record-metric {
+            font-size: 12px;
+            background: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: var(--danger);
+            padding: 6px 14px;
+            border: 1px solid var(--danger);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .download-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(13, 124, 168, 0.2);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(13, 124, 168, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .records-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .download-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🚀 Validación de Prototipado</h1>
+        <p>Herramienta completa para capturar hallazgos de testeo con usuarios</p>
+        <p class="subtitle">Mentoría 2: Evidencia, Métricas y Decisiones</p>
+    </header>
+
+    <div class="content">
+        <div class="success-message" id="successMessage">
+            ✅ Hallazgo registrado exitosamente
+        </div>
+
+        <div class="intro-box">
+            <h3>🎯 ¿Por qué esto importa?</h3>
+            <p>Cada campo de este formulario te ayuda a capturar información diferente sobre cómo los usuarios interactúan con tu prototipo. Juntos, estos datos crean un panorama completo que te permite:</p>
+            <ul>
+                <li><strong>Identificar problemas reales</strong> que afectan a los usuarios (no asunciones)</li>
+                <li><strong>Medir si tu solución funciona</strong> con métricas claras (claridad, satisfacción)</li>
+                <li><strong>Tomar decisiones basadas en evidencia</strong> para el próximo ciclo</li>
+                <li><strong>Demostrar validación</strong> a mentores, inversionistas o stakeholders</li>
+            </ul>
+        </div>
+
+        <form id="prototypeForm">
+            <!-- SECCIÓN 1: IDENTIFICACIÓN -->
+            <div class="form-section">
+                <h2>
+                    👥 Contexto del Testeo
+                    <span class="importance-badge">Crítico</span>
+                </h2>
+                <div class="section-help">
+                    💡 <strong>¿Por qué?</strong> Entender quién es tu usuario y qué estás testeando es fundamental para interpretar los resultados correctamente.
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            Iniciativa / Proyecto
+                            <span class="tooltip">
+                                <span class="label-help">?</span>
+                                <span class="tooltiptext">El nombre de tu startup o proyecto. Ej: Comidas Express, App de fitness, Plataforma de cursos</span>
+                            </span>
+                        </label>
+                        <input type="text" id="iniciativa" name="iniciativa"
+                            placeholder="Ej: Comidas Express - plataforma de delivery rápido" required>
+                        <div class="example-text">Ejemplo: Comidas Express | QuickFit | EduHub</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Usuario Testeado
+                            <span class="tooltip">
+                                <span class="label-help">?</span>
+                                <span class="tooltiptext">Información sobre la persona: edad, ocupación, contexto. Esto te ayuda a identificar patrones por tipo de usuario.</span>
+                            </span>
+                        </label>
+                        <input type="text" id="usuario" name="usuario"
+                            placeholder="Ej: Carlos, 28 años, contador independiente" required>
+                        <div class="example-text">Ejemplo: María, 35, dueña de restaurante | Juan, 22, estudiante</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            Tipo de Prototipo
+                            <span class="tooltip">
+                                <span class="label-help">?</span>
+                                <span class="tooltiptext">📄 Boceto = dibujos/wireframes | 🛠️ Físico = modelo tangible | 💻 Digital = app/web funcional</span>
+                            </span>
+                        </label>
+                        <select id="prototipo" name="prototipo" required>
+                            <option value="">-- Selecciona tipo --</option>
+                            <option value="boceto">📄 Boceto (papel, Figma, wireframes)</option>
+                            <option value="fisico">🛠️ Físico (modelo, maqueta tangible)</option>
+                            <option value="digital">💻 Digital (app, web, prototipo clickeable)</option>
+                        </select>
+                        <div class="example-text">Cada tipo genera feedback diferente</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha del Testeo</label>
+                        <input type="date" id="fecha" name="fecha" required>
+                        <div class="example-text">Importante para ver tendencias en el tiempo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: HALLAZGOS CUALITATIVOS -->
+            <div class="form-section">
+                <h2>
+                    📊 Hallazgos del Usuario
+                    <span class="importance-badge">Crítico</span>
+                </h2>
+                <div class="section-help">
+                    💡 <strong>¿Por qué?</strong> Las palabras del usuario son oro puro. Aquí capturan qué funcionó, qué confundió y qué dijeron exactamente. Estas respuestas te muestran el "por qué" detrás de las métricas.
+                </div>
+
+                <div class="form-group form-row full">
+                    <label for="funciono">
+                        ✅ ¿Qué FUNCIONÓ bien?
+                        <span class="tooltip">
+                            <span class="label-help">?</span>
+                            <span class="tooltiptext">Especifica qué partes del prototipo los usuarios entendieron o usaron correctamente. Esto son tus fortalezas.</span>
+                        </span>
+                    </label>
+                    <textarea id="funciono" name="funciono"
+                        placeholder="Ej: 'El flujo de búsqueda fue muy intuitivo. El usuario encontró lo que quería en 30 segundos sin ayuda.'"></textarea>
+                    <div class="example-text">🔍 Sé específico: qué exactamente funcionó, no solo "le gustó"</div>
+                </div>
+
+                <div class="form-group form-row full">
+                    <label for="confundio">
+                        😕 ¿Qué confundió o NO funcionó?
+                        <span class="tooltip">
+                            <span class="label-help">?</span>
+                            <span class="tooltiptext">Documenta exactamente dónde se perdió, vaciló o se frustró. Estos son tus problemas a resolver.</span>
+                        </span>
+                    </label>
+                    <textarea id="confundio" name="confundio"
+                        placeholder="Ej: 'No entendió que el botón verde era para confirmar el pedido. Intentó el botón azul primero.'"></textarea>
+                    <div class="example-text">🔍 Sé específico: dónde exactamente se confundió, qué intentó, qué no funcionó</div>
+                </div>
+
+                <div class="form-group form-row full">
+                    <label for="cita">
+                        💬 Cita textual del usuario
+                        <span class="tooltip">
+                            <span class="label-help">?</span>
+                            <span class="tooltiptext">Las palabras exactas del usuario son más poderosas que tu interpretación. Úsalas en presentaciones.</span>
+                        </span>
+                    </label>
+                    <input type="text" id="cita" name="cita"
+                        placeholder='Ej: "Pensé que tenía que entrar con la app. Casi me voy sin pedir"'>
+                    <div class="example-text">Las citas directas son poderosas para presentaciones a stakeholders</div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: MÉTRICAS CUANTITATIVAS -->
+            <div class="form-section">
+                <h2>
+                    📈 Métricas Clave
+                    <span class="importance-badge">Crítico</span>
+                </h2>
+                <div class="section-help">
+                    💡 <strong>¿Por qué?</strong> Las métricas te permiten ver patrones. Con 5-10 usuarios, empezarás a ver tendencias. Con 15-20, tienes validación sólida.
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            ¿Usarías esto? (Intención)
+                            <span class="tooltip">
+                                <span class="label-help">?</span>
+                                <span class="tooltiptext">La pregunta más importante: ¿Lo compraría/usaría realmente? Meta: 70% "Sí"</span>
+                            </span>
+                        </label>
+                        <select id="intencion" name="intencion" required onchange="actualizarMetricaIntencion()">
+                            <option value="">-- Selecciona respuesta --</option>
+                            <option value="si">✅ Sí, definitivamente lo usaría</option>
+                            <option value="talvez">❓ Tal vez, depende de...</option>
+                            <option value="no">❌ No, no me interesa</option>
+                        </select>
+                        <div class="example-text">Esta es tu métrica de validación más importante</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            Claridad (¿Entendió el concepto?)
+                            <span class="tooltip">
+                                <span class="label-help">?</span>
+                                <span class="tooltiptext">1 = Confusión total | 5 = Cristal claro. Meta: 4/5</span>
+                            </span>
+                        </label>
+                        <div class="range-container">
+                            <div class="range-group">
+                                <input type="range" id="claridad" name="claridad" min="1" max="5" value="3" onchange="actualizarRangos()">
+                                <span class="range-value" id="claridadValue">3</span>
+                            </div>
+                            <div class="range-labels">
+                                <span>Muy confuso</span>
+                                <span>Perfecto</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Satisfacción (¿Le gustó la experiencia?)
+                            <span class="tooltip">
+                                <span class="label-help">?</span>
+                                <span class="tooltiptext">1 = Frustrado | 5 = Encantado. Meta: 3.5/5</span>
+                            </span>
+                        </label>
+                        <div class="range-container">
+                            <div class="range-group">
+                                <input type="range" id="satisfaccion" name="satisfaccion" min="1" max="5" value="3" onchange="actualizarRangos()">
+                                <span class="range-value" id="satisfaccionValue">3</span>
+                            </div>
+                            <div class="range-labels">
+                                <span>Muy insatisfecho</span>
+                                <span>Muy satisfecho</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div class="emoji">🎯</div>
+                        <div class="label">Intención</div>
+                        <div class="value" id="metricaIntencion">—</div>
+                        <div style="font-size: 10px; color: #999; margin-top: 8px;">Meta: 70% "Sí"</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="emoji">🔍</div>
+                        <div class="label">Claridad</div>
+                        <div class="value" id="metricaClaridad">3/5</div>
+                        <div style="font-size: 10px; color: #999; margin-top: 8px;">Meta: 4/5</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="emoji">😊</div>
+                        <div class="label">Satisfacción</div>
+                        <div class="value" id="metricaSatisfaccion">3/5</div>
+                        <div style="font-size: 10px; color: #999; margin-top: 8px;">Meta: 3.5/5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: ACCIONES -->
+            <div class="form-section">
+                <h2>
+                    🎯 Próximos Pasos
+                    <span class="importance-badge">Importante</span>
+                </h2>
+                <div class="section-help">
+                    💡 <strong>¿Por qué?</strong> Los hallazgos sin acciones se olvidan. Aquí captura qué harás diferente basado en lo que aprendiste.
+                </div>
+
+                <div class="form-group form-row full">
+                    <label for="accion">
+                        ¿Qué cambiaremos en el próximo ciclo?
+                        <span class="tooltip">
+                            <span class="label-help">?</span>
+                            <span class="tooltiptext">Sé específico: qué versión probarás, con quién, cuándo. No "mejorar la UX" sino "cambiar el botón de azul a verde"</span>
+                        </span>
+                    </label>
+                    <textarea id="accion" name="accion"
+                        placeholder="Ej: 'Cambiar botón de acción a verde. Testear con 5 usuarios nuevos el jueves. Si el 80% lo encuentra, avanzamos. Si no, hacemos otro ciclo con el ícono mejorado.'"></textarea>
+                    <div class="example-text">Sé específico y medible: qué cambio, con quién, cuándo, y cómo sabrás si funcionó</div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 5: LEVANTAMIENTO DE CAPITAL -->
+            <div class="form-section">
+                <h2>
+                    💰 Estrategia de Levantamiento de Capital
+                    <span class="importance-badge">Estratégico</span>
+                </h2>
+                <div class="section-help">
+                    💡 <strong>¿Por qué?</strong> La validación de usuario es el argumento más poderoso para levantar capital. Mientras mejor sea tu validación (intención, claridad, satisfacción), más opciones y mejores términos tendrás.
+                </div>
+
+                <div class="form-group form-row full">
+                    <label for="estrategiaCapital">
+                        ¿Cuál es tu estrategia de financiamiento?
+                        <span class="tooltip">
+                            <span class="label-help">?</span>
+                            <span class="tooltiptext">Elige basado en tu estado actual: idea, prototipo validado, tracción, etc.</span>
+                        </span>
+                    </label>
+                    <select id="estrategiaCapital" name="estrategiaCapital" onchange="mostrarRecomendacionCapital()">
+                        <option value="">-- Selecciona tu estado actual --</option>
+                        <option value="idea">💡 Idea sin validar (solo concepto)</option>
+                        <option value="prototipo">📄 Prototipo sin validación</option>
+                        <option value="validacion">✅ Validación inicial (1-5 usuarios)</option>
+                        <option value="traccion">🚀 Tracción real (20+ usuarios, métrica clara)</option>
+                        <option value="revenue">💵 Ya tengo revenue/pagos</option>
+                    </select>
+                </div>
+
+                <div id="recomendacionCapitalDiv" style="display: none; margin-top: 20px;">
+                    <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid var(--primary); border-radius: 12px; padding: 20px;">
+                        <h3 id="recomendacionTitulo" style="color: var(--primary); margin: 0 0 15px 0; font-size: 16px;"></h3>
+                        <div id="recomendacionContenido" style="font-size: 14px; line-height: 1.6; color: #333;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES -->
+            <div class="button-group">
+                <button type="submit" class="btn-submit">
+                    ✅ Registrar Hallazgo
+                </button>
+                <button type="reset" class="btn-reset" onclick="resetearFormulario()">
+                    🔄 Limpiar
+                </button>
+            </div>
+        </form>
+
+        <!-- REGISTROS -->
+        <div class="records-section" id="recordsSection" style="display: none;">
+            <div class="records-header">
+                <h2>📋 Hallazgos Registrados</h2>
+                <span class="records-count" id="recordsCount">0 hallazgos</span>
+            </div>
+
+            <div class="records-stats" id="recordsStats"></div>
+
+            <div id="recordsList"></div>
+
+            <div class="download-buttons">
+                <button class="btn-download" onclick="descargarJSON()">📄 Descargar JSON</button>
+                <button class="btn-download" onclick="descargarImagen()">🖼️ Descargar Resumen (PNG)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+    let records = [];
+
+    // Establecer fecha actual
+    document.getElementById('fecha').valueAsDate = new Date();
+
+    // Enviar formulario
+    document.getElementById('prototypeForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const record = {
+            id: Math.random().toString(36).substr(2, 9),
+            iniciativa: document.getElementById('iniciativa').value.trim(),
+            usuario: document.getElementById('usuario').value.trim(),
+            prototipo: document.getElementById('prototipo').value,
+            funciono: document.getElementById('funciono').value.trim(),
+            confundio: document.getElementById('confundio').value.trim(),
+            cita: document.getElementById('cita').value.trim(),
+            intencion: document.getElementById('intencion').value,
+            claridad: parseInt(document.getElementById('claridad').value),
+            satisfaccion: parseInt(document.getElementById('satisfaccion').value),
+            accion: document.getElementById('accion').value.trim(),
+            fecha: document.getElementById('fecha').value,
+            timestamp: new Date().toLocaleString('es-ES')
+        };
+
+        records.push(record);
+        mostrarMensajeExito();
+        renderRecords();
+        document.getElementById('prototypeForm').reset();
+        document.getElementById('fecha').valueAsDate = new Date();
+        resetearMetricas();
+    });
+
+    function actualizarMetricaIntencion() {
+        const valor = document.getElementById('intencion').value;
+        const map = { 'si': '✅ Sí', 'talvez': '❓ Tal vez', 'no': '❌ No' };
+        document.getElementById('metricaIntencion').textContent = map[valor] || '—';
+    }
+
+    function actualizarRangos() {
+        document.getElementById('claridadValue').textContent = document.getElementById('claridad').value;
+        document.getElementById('metricaClaridad').textContent = document.getElementById('claridad').value + '/5';
+
+        document.getElementById('satisfaccionValue').textContent = document.getElementById('satisfaccion').value;
+        document.getElementById('metricaSatisfaccion').textContent = document.getElementById('satisfaccion').value + '/5';
+    }
+
+    function resetearMetricas() {
+        document.getElementById('metricaIntencion').textContent = '—';
+        document.getElementById('metricaClaridad').textContent = '3/5';
+        document.getElementById('metricaSatisfaccion').textContent = '3/5';
+    }
+
+    function resetearFormulario() {
+        document.getElementById('prototypeForm').reset();
+        document.getElementById('fecha').valueAsDate = new Date();
+        resetearMetricas();
+    }
+
+    function renderRecords() {
+        const recordsList = document.getElementById('recordsList');
+        const section = document.getElementById('recordsSection');
+        const statsDiv = document.getElementById('recordsStats');
+
+        if (records.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+        document.getElementById('recordsCount').textContent = `${records.length} hallazgo${records.length !== 1 ? 's' : ''}`;
+
+        // Calcular estadísticas
+        const totalClaridad = records.reduce((s, r) => s + r.claridad, 0);
+        const totalSatisfaccion = records.reduce((s, r) => s + r.satisfaccion, 0);
+        const totalSi = records.filter(r => r.intencion === 'si').length;
+        const pctSi = Math.round((totalSi / records.length) * 100);
+
+        statsDiv.innerHTML = `
+            <div class="stat-card">
+                <div class="value">${records.length}</div>
+                <div class="label">Total de Testeos</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">${pctSi}%</div>
+                <div class="label">Intención "Sí"</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">${(totalClaridad / records.length).toFixed(1)}/5</div>
+                <div class="label">Claridad Promedio</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">${(totalSatisfaccion / records.length).toFixed(1)}/5</div>
+                <div class="label">Satisfacción Promedio</div>
+            </div>
+        `;
+
+        // Renderizar records
+        recordsList.innerHTML = records.map((r, idx) => {
+            const badgeIntencionClass = {
+                'si': 'badge-intencion-si',
+                'talvez': 'badge-intencion-talvez',
+                'no': 'badge-intencion-no'
+            }[r.intencion] || '';
+
+            const intentionText = {
+                'si': '✅ Usaría',
+                'talvez': '❓ Tal vez',
+                'no': '❌ No usaría'
+            }[r.intencion] || '';
+
+            return `
+                <div class="record-item">
+                    <div class="record-header">
+                        <div>
+                            <div class="record-title">#${idx + 1} — ${r.iniciativa}</div>
+                            <div class="record-meta">
+                                👤 ${r.usuario} • 📅 ${r.fecha}
+                            </div>
+                        </div>
+                        <button type="button" class="delete-btn" onclick="eliminarRecord('${r.id}')">🗑️ Eliminar</button>
+                    </div>
+
+                    <div class="record-badges">
+                        <span class="record-badge badge-prototipo">${
+                            r.prototipo === 'boceto' ? '📄 Boceto' :
+                            r.prototipo === 'fisico' ? '🛠️ Físico' : '💻 Digital'
+                        }</span>
+                        <span class="record-badge ${badgeIntencionClass}">${intentionText}</span>
+                    </div>
+
+                    <div class="record-content">
+                        ${r.funciono ? `<p><strong style="color: var(--success);">✅ Funcionó:</strong> ${escapeHtml(r.funciono)}</p>` : ''}
+                        ${r.confundio ? `<p><strong style="color: var(--warning);">😕 Confundió:</strong> ${escapeHtml(r.confundio)}</p>` : ''}
+                        ${r.cita ? `<p style="font-style: italic; background: var(--light); padding: 10px; border-radius: 6px;"><strong>💬 Cita:</strong> "${escapeHtml(r.cita)}"</p>` : ''}
+                        ${r.accion ? `<p><strong style="color: var(--primary);">🎯 Acción:</strong> ${escapeHtml(r.accion)}</p>` : ''}
+                    </div>
+
+                    <div class="record-metrics">
+                        <div class="record-metric">🔍 Claridad: <strong>${r.claridad}/5</strong></div>
+                        <div class="record-metric">😊 Satisfacción: <strong>${r.satisfaccion}/5</strong></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function eliminarRecord(id) {
+        if (confirm('¿Eliminar este hallazgo?')) {
+            records = records.filter(r => r.id !== id);
+            renderRecords();
+        }
+    }
+
+    function mostrarMensajeExito() {
+        const msg = document.getElementById('successMessage');
+        msg.classList.add('show');
+        setTimeout(() => msg.classList.remove('show'), 3000);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function descargarJSON() {
+        if (records.length === 0) {
+            alert('No hay hallazgos para descargar');
+            return;
+        }
+
+        const totalClaridad = records.reduce((s, r) => s + r.claridad, 0);
+        const totalSatisfaccion = records.reduce((s, r) => s + r.satisfaccion, 0);
+
+        const data = {
+            generado: new Date().toLocaleString('es-ES'),
+            resumen: {
+                totalTesteos: records.length,
+                intentoSi: records.filter(r => r.intencion === 'si').length,
+                pctSi: Math.round((records.filter(r => r.intencion === 'si').length / records.length) * 100),
+                claridad_promedio: (totalClaridad / records.length).toFixed(2),
+                satisfaccion_promedio: (totalSatisfaccion / records.length).toFixed(2),
+            },
+            hallazgos: records
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `hallazgos-prototipado-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function descargarImagen() {
+        if (records.length === 0) {
+            alert('No hay hallazgos para descargar');
+            return;
+        }
+
+        const elemento = document.getElementById('recordsStats');
+
+        html2canvas(elemento, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            allowTaint: true
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = `resumen-prototipado-${new Date().toISOString().split('T')[0]}.png`;
+            link.click();
+        }).catch(err => {
+            console.error('Error al generar imagen:', err);
+            alert('Error al descargar la imagen. Intenta con el JSON.');
+        });
+    }
+
+    // Recomendaciones de capital
+    const estrategiasCapital = {
+        'idea': {
+            titulo: '💡 Idea Sin Validar',
+            contenido: `
+                <p><strong>Estado actual:</strong> Concepto, idea en la cabeza o documento.</p>
+                <p><strong>Opciones de financiamiento:</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Tus ahorros / Friends & Family:</strong> Primeros $500-5,000 USD para hacer el prototipo</li>
+                    <li><strong>Concursos / Hackathons:</strong> Premios de $1,000-50,000 USD sin perder equity</li>
+                    <li><strong>Grants (convocatorias):</strong> Fondos de universidades, gobiernos, ONGs</li>
+                </ul>
+                <p><strong>Siguiente paso crítico:</strong> Antes de buscar inversión, necesitas ir a conversar con 10 usuarios reales. Sin validación, nadie te financia.</p>
+                <p style="background: #fef3c7; padding: 12px; border-radius: 6px; margin-top: 12px;"><strong>⚠️ Consejo:</strong> No pidas dinero aún. Pide feedback. Valida con usuarios primero.</p>
+            `
+        },
+        'prototipo': {
+            titulo: '📄 Prototipo Sin Validación',
+            contenido: `
+                <p><strong>Estado actual:</strong> Tienes un prototipo (boceto, físico o digital) pero sin feedback de usuarios.</p>
+                <p><strong>Opciones de financiamiento:</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Pre-Seed (Friends & Family + Angel):</strong> $10,000-100,000 USD</li>
+                    <li><strong>Concursos de startup:</strong> Premios $5,000-100,000 USD</li>
+                    <li><strong>Aceleradoras:</strong> Programas de 3-6 meses con mentoría + dinero</li>
+                    <li><strong>Bootstrapping:</strong> Vender/prevendas a primeros clientes sin invertir más</li>
+                </ul>
+                <p><strong>Lo que te pide cualquier inversor:</strong> "Muéstrame que los usuarios lo quieren"</p>
+                <p style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;"><strong>✅ Tu tarea ahora:</strong> Testear con 10-15 usuarios y traer validación. Eso te abre todas las puertas.</p>
+            `
+        },
+        'validacion': {
+            titulo: '✅ Validación Inicial (1-5 usuarios)',
+            contenido: `
+                <p><strong>Estado actual:</strong> Ya tienes primeros usuarios confirmando que tu solución funciona.</p>
+                <p><strong>Opciones de financiamiento:</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Angel Investors:</strong> $25,000-250,000 USD. Quieren ver co-fundadores comprometidos + validación inicial</li>
+                    <li><strong>Pre-Seed Funds:</strong> $50,000-500,000 USD. Fondos especializados en etapas tempranas</li>
+                    <li><strong>Aceleradoras tier-1:</strong> Y Combinator, Techstars, Endeavor. Inversión + mentoría intensiva</li>
+                    <li><strong>Corporate Ventures:</strong> Grandes empresas que invierten en startups del sector</li>
+                    <li><strong>Bootstrapping con tracción:</strong> Vender el prototipo, reinvertir ganancias</li>
+                </ul>
+                <p><strong>Tu argumento de venta:</strong> "Probamos con usuarios y 60%+ dice que usaría esto"</p>
+                <p style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;"><strong>✅ Acción:</strong> Llega a 20 usuarios validados y prepara un pitch deck simple. Ya estás listo para hablar con angels.</p>
+            `
+        },
+        'traccion': {
+            titulo: '🚀 Tracción Real (20+ usuarios, métrica clara)',
+            contenido: `
+                <p><strong>Estado actual:</strong> Tienes usuarios activos, métrica clara de valor (pedidos/mes, usuarios activos, NPS, etc).</p>
+                <p><strong>Opciones de financiamiento:</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Seed Round:</strong> $500,000-2M USD. Inversión formal de VCs/fondos seed</li>
+                    <li><strong>Series A:</strong> $2M-10M+ USD. Para escalar operacionalmente</li>
+                    <li><strong>Strategic Investors:</strong> Grandes competidores o actores del ecosistema</li>
+                    <li><strong>Deuda / Revenue-based financing:</strong> Préstamo en función de tus ingresos</li>
+                    <li><strong>IPO / Venta estratégica:</strong> Si llegas a $1M+ MRR</li>
+                </ul>
+                <p><strong>Lo que quieren los VCs:</strong> "Demuéstrame que puedes escalar esto. ¿Cuál es tu CAC? ¿LTV? ¿Crecimiento M/M?"</p>
+                <p style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;"><strong>✅ Acción:</strong> Documenta tus métricas, crecimiento y plan de escalabilidad. Empieza conversaciones con Seed VCs.</p>
+            `
+        },
+        'revenue': {
+            titulo: '💵 Ya Tengo Revenue/Pagos',
+            contenido: `
+                <p><strong>Estado actual:</strong> Usuarios pagando, tienes ingresos recurrentes o puntuales.</p>
+                <p><strong>Opciones de financiamiento:</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Series A+ (acelerado):</strong> $5M-50M+ USD. VCs te buscan a ti</li>
+                    <li><strong>Revenue-based financing:</strong> Préstamo basado en tus ingresos mensuales (25-50% de revenue)</li>
+                    <li><strong>Private Equity:</strong> Compra de participación importante con salida clara</li>
+                    <li><strong>Strategic acquirers:</strong> Grandes empresas que te compran</li>
+                    <li><strong>IPO:</strong> Salida pública si crecimiento es explosivo</li>
+                    <li><strong>Bootstrapping puro:</strong> Ya tienes cash flow, reinvierte y crece sin perder control</li>
+                </ul>
+                <p><strong>Tu posición:</strong> FUERTE. Ahora negocias desde arriba. Inversionistas compiten por ti.</p>
+                <p style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;"><strong>✅ Acción:</strong> Decide si quieres capital (para escalar rápido) o bootstrapping (para mantener control). Ambas son válidas.</p>
+            `
+        }
+    };
+
+    function mostrarRecomendacionCapital() {
+        const select = document.getElementById('estrategiaCapital');
+        const div = document.getElementById('recomendacionCapitalDiv');
+        const titulo = document.getElementById('recomendacionTitulo');
+        const contenido = document.getElementById('recomendacionContenido');
+
+        if (select.value && estrategiasCapital[select.value]) {
+            const recom = estrategiasCapital[select.value];
+            titulo.textContent = recom.titulo;
+            contenido.innerHTML = recom.contenido;
+            div.style.display = 'block';
+        } else {
+            div.style.display = 'none';
+        }
+    }
+
+    // Inicializar
+    document.getElementById('metricaIntencion').textContent = '—';
+</script>
+
+</body>
+</html>
