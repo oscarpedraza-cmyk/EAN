@@ -336,6 +336,35 @@
             margin-bottom: 10px;
         }
 
+        .currency-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .currency-btn {
+            padding: 8px 16px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .currency-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .currency-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+
         @media (max-width: 768px) {
             header h1 {
                 font-size: 24px;
@@ -357,6 +386,11 @@
     <header>
         <h1>💰 Módulo 2: Costos y Dinero (Junior)</h1>
         <p>Para startups que acaban de validar y no saben "cuánto cuesta esto"</p>
+        <div class="currency-selector">
+            <span style="color: white; font-size: 13px;">Moneda:</span>
+            <button class="currency-btn active" onclick="changeCurrency('USD')">USD 🇺🇸</button>
+            <button class="currency-btn" onclick="changeCurrency('COP')">COP 🇨🇴</button>
+        </div>
     </header>
 
     <div class="content">
@@ -379,26 +413,26 @@
             <div class="lista-items">
                 <div class="item">
                     <div class="item-title">🚀 Costos de Inicio (una sola vez)</div>
-                    <div class="item-desc"><strong>App:</strong> Hacer app ($3K), diseño ($1K), dominio ($100)</div>
-                    <div class="item-desc"><strong>Servicio:</strong> Equipamiento ($500-2K), certificaciones ($100-500)</div>
-                    <div class="item-desc"><strong>Producto físico:</strong> Molde/prototipo ($1K-10K), primeras unidades ($1-5K)</div>
-                    <div class="item-desc" style="margin-top: 8px;"><strong>Total año 1:</strong> ~$2,000-10,000+ si contratas ayuda</div>
-                    <div class="item-desc" style="margin-top: 8px;"><strong>Total año 1 (si lo haces tú):</strong> $0-2K + tu tiempo</div>
+                    <div class="item-desc"><strong>App:</strong> Hacer app (<span data-price-usd="$3K" data-price-cop="$12M">$3K</span>), diseño (<span data-price-usd="$1K" data-price-cop="$4M">$1K</span>), dominio (<span data-price-usd="$100" data-price-cop="$400K">$100</span>)</div>
+                    <div class="item-desc"><strong>Servicio:</strong> Equipamiento (<span data-price-usd="$500-2K" data-price-cop="$2M-8M">$500-2K</span>), certificaciones (<span data-price-usd="$100-500" data-price-cop="$400K-2M">$100-500</span>)</div>
+                    <div class="item-desc"><strong>Producto físico:</strong> Molde/prototipo (<span data-price-usd="$1K-10K" data-price-cop="$4M-40M">$1K-10K</span>), primeras unidades (<span data-price-usd="$1-5K" data-price-cop="$4M-20M">$1-5K</span>)</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Total año 1:</strong> ~<span data-price-usd="$2,000-10,000+" data-price-cop="$8M-40M+">$2,000-10,000+</span> si contratas ayuda</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Total año 1 (si lo haces tú):</strong> <span data-price-usd="$0-2K" data-price-cop="$0-8M">$0-2K</span> + tu tiempo</div>
                 </div>
 
                 <div class="item">
                     <div class="item-title">💸 Costos Mensuales (operación)</div>
-                    <div class="item-desc"><strong>App:</strong> Servidor, base de datos, API ($200-2000/mes)</div>
-                    <div class="item-desc"><strong>Servicio:</strong> Local/oficina, herramientas, software ($300-1500/mes)</div>
-                    <div class="item-desc"><strong>Producto físico:</strong> Manufactura, almacenamiento, envío ($500-5000/mes)</div>
-                    <div class="item-desc" style="margin-top: 8px;"><strong>Rango típico:</strong> $200-2000/mes al inicio, más cuando creces</div>
+                    <div class="item-desc"><strong>App:</strong> Servidor, base de datos, API (<span data-price-usd="$200-2000/mes" data-price-cop="$800K-8M/mes">$200-2000/mes</span>)</div>
+                    <div class="item-desc"><strong>Servicio:</strong> Local/oficina, herramientas, software (<span data-price-usd="$300-1500/mes" data-price-cop="$1.2M-6M/mes">$300-1500/mes</span>)</div>
+                    <div class="item-desc"><strong>Producto físico:</strong> Manufactura, almacenamiento, envío (<span data-price-usd="$500-5000/mes" data-price-cop="$2M-20M/mes">$500-5000/mes</span>)</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Rango típico:</strong> <span data-price-usd="$200-2000/mes" data-price-cop="$800K-8M/mes">$200-2000/mes</span> al inicio, más cuando creces</div>
                 </div>
 
                 <div class="item">
                     <div class="item-title">👥 Costos de Operar (personas + marketing)</div>
                     <div class="item-desc">Lo que gastas en gente y en conseguir clientes.</div>
                     <div class="item-desc" style="margin-top: 8px;"><strong>Ejemplos:</strong> Tu salario, empleados, ads, viajes, eventos, redes sociales.</div>
-                    <div class="item-desc" style="margin-top: 8px;"><strong>Rango típico:</strong> $0/mes (si no te pagas) a $5000+/mes (si tienes equipo)</div>
+                    <div class="item-desc" style="margin-top: 8px;"><strong>Rango típico:</strong> <span data-price-usd="$0/mes" data-price-cop="$0/mes">$0/mes</span> (si no te pagas) a <span data-price-usd="$5000+/mes" data-price-cop="$20M+/mes">$5000+/mes</span> (si tienes equipo)</div>
                 </div>
             </div>
         </div>
@@ -426,10 +460,10 @@
                     <strong>TÚ:</strong> Gratis en $$ pero costó tu tiempo (no es gratis de verdad). Siguiente costo: mantenerlo vs hacer nuevas cosas.
                 </div>
                 <div class="explicacion" id="q1-b">
-                    <strong>FREELANCER:</strong> Pagaste $1-5K probablemente. Ya está. Ahora el costo es mantener/mejorar.
+                    <strong>FREELANCER:</strong> Pagaste <span data-price-usd="$1-5K" data-price-cop="$4M-20M">$1-5K</span> probablemente. Ya está. Ahora el costo es mantener/mejorar.
                 </div>
                 <div class="explicacion" id="q1-c">
-                    <strong>AGENCIA:</strong> Pagaste $5K+. Caro para MVP. Inversionistas preguntarán "¿por qué tanto?". Pero si es muy complejo, a veces necesario.
+                    <strong>AGENCIA:</strong> Pagaste <span data-price-usd="$5K+" data-price-cop="$20M+">$5K+</span>. Caro para MVP. Inversionistas preguntarán "¿por qué tanto?". Pero si es muy complejo, a veces necesario.
                 </div>
             </div>
 
@@ -447,13 +481,13 @@
                     </button>
                 </div>
                 <div class="explicacion" id="q2-a">
-                    <strong>COSTO MENSUAL ESTIMADO:</strong> $200-500. Muy bajo. Mantén gastos mínimos.
+                    <strong>COSTO MENSUAL ESTIMADO:</strong> <span data-price-usd="$200-500" data-price-cop="$800K-2M">$200-500</span>. Muy bajo. Mantén gastos mínimos.
                 </div>
                 <div class="explicacion" id="q2-b">
-                    <strong>COSTO MENSUAL ESTIMADO:</strong> $300-1000. Empiezas a pagar más por infraestructura/personal.
+                    <strong>COSTO MENSUAL ESTIMADO:</strong> <span data-price-usd="$300-1000" data-price-cop="$1.2M-4M">$300-1000</span>. Empiezas a pagar más por infraestructura/personal.
                 </div>
                 <div class="explicacion" id="q2-c">
-                    <strong>COSTO MENSUAL ESTIMADO:</strong> $800-3000+. Ya necesitas sistemas serios. Gastos escalan.
+                    <strong>COSTO MENSUAL ESTIMADO:</strong> <span data-price-usd="$800-3000+" data-price-cop="$3.2M-12M+">$800-3000+</span>. Ya necesitas sistemas serios. Gastos escalan.
                 </div>
             </div>
 
@@ -480,7 +514,7 @@
                     <strong>BUENO:</strong> Es predecible. Necesitas ~30-100 clientes mensuales para cubrir costos según precio.
                 </div>
                 <div class="explicacion" id="q3-c">
-                    <strong>REQUIERE VOLUMEN:</strong> Si cobras $20, necesitas ~25-50 ventas/mes. ¿Es realista?
+                    <strong>REQUIERE VOLUMEN:</strong> Si cobras <span data-price-usd="$20" data-price-cop="$80K">$20</span>, necesitas ~25-50 ventas/mes. ¿Es realista?
                 </div>
                 <div class="explicacion" id="q3-d">
                     <strong>INTELIGENTE:</strong> Combina lo mejor. Ej: Plan gratis + premium, o comisión por transacción.
@@ -506,20 +540,20 @@
                 <tbody>
                     <tr>
                         <td><strong>Yo lo hice (MVP)</strong><br>1-10 clientes</td>
-                        <td>$0-1K</td>
-                        <td>$200-500</td>
+                        <td><span data-price-usd="$0-1K" data-price-cop="$0-4M">$0-1K</span></td>
+                        <td><span data-price-usd="$200-500" data-price-cop="$800K-2M">$200-500</span></td>
                         <td>✅ Haz que 10-20 clientes paguen = cubre costos</td>
                     </tr>
                     <tr>
                         <td><strong>Contraté ayuda</strong><br>10-50 clientes</td>
-                        <td>$2-5K</td>
-                        <td>$500-1.5K</td>
+                        <td><span data-price-usd="$2-5K" data-price-cop="$8M-20M">$2-5K</span></td>
+                        <td><span data-price-usd="$500-1.5K" data-price-cop="$2M-6M">$500-1.5K</span></td>
                         <td>✅ Consigue 50-100 clientes pagando = cubre todo</td>
                     </tr>
                     <tr>
                         <td><strong>Equipo completo</strong><br>50+ clientes</td>
-                        <td>$5K+</td>
-                        <td>$1.5K-3K</td>
+                        <td><span data-price-usd="$5K+" data-price-cop="$20M+">$5K+</span></td>
+                        <td><span data-price-usd="$1.5K-3K" data-price-cop="$6M-12M">$1.5K-3K</span></td>
                         <td>⚠️ Necesitas inversión o crecer MUY rápido</td>
                     </tr>
                 </tbody>
@@ -530,11 +564,11 @@
         <h2 class="section-title">🎯 Cuarto: La pregunta más importante</h2>
 
         <div class="tip-box">
-            <strong>❓ Si 1 usuario paga $10, ¿cuántos necesitas?</strong>
-            <p><strong>Ejemplo:</strong> Si gastas $500/mes:</p>
-            <p>• Si cobras $5 por usuario: necesitas <strong>100 usuarios</strong></p>
-            <p>• Si cobras $10 por usuario: necesitas <strong>50 usuarios</strong></p>
-            <p>• Si cobras $50 por usuario: necesitas <strong>10 usuarios</strong></p>
+            <strong>❓ Si 1 usuario paga <span data-price-usd="$10" data-price-cop="$40K">$10</span>, ¿cuántos necesitas?</strong>
+            <p><strong>Ejemplo:</strong> Si gastas <span data-price-usd="$500/mes" data-price-cop="$2M/mes">$500/mes</span>:</p>
+            <p>• Si cobras <span data-price-usd="$5" data-price-cop="$20K">$5</span> por usuario: necesitas <strong>100 usuarios</strong></p>
+            <p>• Si cobras <span data-price-usd="$10" data-price-cop="$40K">$10</span> por usuario: necesitas <strong>50 usuarios</strong></p>
+            <p>• Si cobras <span data-price-usd="$50" data-price-cop="$200K">$50</span> por usuario: necesitas <strong>10 usuarios</strong></p>
             <p style="margin-top: 15px;"><strong>Pregunta real:</strong> ¿Es realista conseguir X usuarios en 3-6 meses? Si no, tu modelo no funciona aún.</p>
         </div>
 
@@ -544,13 +578,13 @@
         <div class="card">
             <div class="lista-items">
                 <div class="item">
-                    <div class="item-title">🚨 "Costo inicial = $20K+"</div>
+                    <div class="item-title">🚨 "Costo inicial = <span data-price-usd="$20K+" data-price-cop="$80M+">$20K+</span>"</div>
                     <div class="item-desc">Para un MVP, es MUCHO. Significa que o gastaste mal, o fue agencia. Para validación, no necesitas tanto.</div>
                     <div class="item-warning">👉 Acción: Negocia rebaja o haz el MVP más pequeño aún</div>
                 </div>
 
                 <div class="item">
-                    <div class="item-title">🚨 "Costo mensual = $5000+ pero no tengo usuarios"</div>
+                    <div class="item-title">🚨 "Costo mensual = <span data-price-usd="$5000+" data-price-cop="$20M+">$5000+</span> pero no tengo usuarios"</div>
                     <div class="item-desc">Estás quebrando. Costos deben escalar CON usuarios, no antes.</div>
                     <div class="item-warning">👉 Acción: Reduce a free tier. Espera a tener tracción. URGENTE.</div>
                 </div>
@@ -585,7 +619,7 @@
                 <div class="timeline-dot">2</div>
                 <div class="timeline-content">
                     <strong>💰 Decidir CÓMO cobrar</strong>
-                    <p>Suscripción $9.99/mes, one-time $5, o freemium. Escoge UNO. Justifica por qué.</p>
+                    <p>Suscripción <span data-price-usd="$9.99/mes" data-price-cop="$40K/mes">$9.99/mes</span>, one-time <span data-price-usd="$5" data-price-cop="$20K">$5</span>, o freemium. Escoge UNO. Justifica por qué.</p>
                 </div>
             </div>
 
@@ -593,7 +627,7 @@
                 <div class="timeline-dot">3</div>
                 <div class="timeline-content">
                     <strong>🎯 Calcular break-even simple</strong>
-                    <p>Costos mensuales ÷ precio = usuarios que necesito. Ejemplo: $300 ÷ $10 = 30 usuarios.</p>
+                    <p>Costos mensuales ÷ precio = usuarios que necesito. Ejemplo: <span data-price-usd="$300" data-price-cop="$1.2M">$300</span> ÷ <span data-price-usd="$10" data-price-cop="$40K">$10</span> = 30 usuarios.</p>
                 </div>
             </div>
 
@@ -601,7 +635,7 @@
                 <div class="timeline-dot">4</div>
                 <div class="timeline-content">
                     <strong>💬 Pregunta a 1 usuario si pagaría</strong>
-                    <p>"Si esto cuesta $9.99/mes, ¿lo pagarías?" La respuesta vale más que cualquier calculadora.</p>
+                    <p>"Si esto cuesta <span data-price-usd="$9.99/mes" data-price-cop="$40K/mes">$9.99/mes</span>, ¿lo pagarías?" La respuesta vale más que cualquier calculadora.</p>
                 </div>
             </div>
 
@@ -609,7 +643,7 @@
                 <div class="timeline-dot">5</div>
                 <div class="timeline-content">
                     <strong>👨‍💼 Habla con contador (si necesario)</strong>
-                    <p>Si vas a cobrar, consulta impuestos. No es caro. Una sesión = $0-100 y evitas problemas.</p>
+                    <p>Si vas a cobrar, consulta impuestos. No es caro. Una sesión = <span data-price-usd="$0-100" data-price-cop="$0-400K">$0-100</span> y evitas problemas.</p>
                 </div>
             </div>
         </div>
@@ -625,6 +659,58 @@
 </div>
 
 <script>
+    // Configuración de monedas
+    const currencies = {
+        USD: { symbol: '$', rate: 1 },
+        COP: { symbol: '$', rate: 4000 }
+    };
+
+    let currentCurrency = 'USD';
+
+    // Mapa de valores en USD para encontrar y reemplazar
+    const priceMap = {
+        // Sección 1: Costos de Inicio
+        '3K': { USD: '3K', COP: '12M' },
+        '1K': { USD: '1K', COP: '4M' },
+        '100': { USD: '100', COP: '400K' },
+        '500-2K': { USD: '500-2K', COP: '2M-8M' },
+        '100-500': { USD: '100-500', COP: '400K-2M' },
+        '1K-10K': { USD: '1K-10K', COP: '4M-40M' },
+        '1-5K': { USD: '1-5K', COP: '4M-20M' },
+        '2,000-10,000+': { USD: '2,000-10,000+', COP: '8M-40M+' },
+        '0-2K': { USD: '0-2K', COP: '0-8M' },
+        // Sección 1: Costos Mensuales
+        '200-2000/mes': { USD: '200-2000/mes', COP: '800K-8M/mes' },
+        '300-1500/mes': { USD: '300-1500/mes', COP: '1.2M-6M/mes' },
+        '500-5000/mes': { USD: '500-5000/mes', COP: '2M-20M/mes' },
+        '200-2000/mes al': { USD: '200-2000/mes', COP: '800K-8M/mes' },
+        '0/mes': { USD: '0/mes', COP: '0/mes' },
+        '5000+/mes': { USD: '5000+/mes', COP: '20M+/mes' },
+        // Sección Preguntas
+        '1-5K probablemente': { USD: '1-5K', COP: '4M-20M' },
+        '5K+': { USD: '5K+', COP: '20M+' },
+        '200-500': { USD: '200-500', COP: '800K-2M' },
+        '300-1000': { USD: '300-1000', COP: '1.2M-4M' },
+        '800-3000+': { USD: '800-3000+', COP: '3.2M-12M+' },
+        '5-50/mes': { USD: '5-50/mes', COP: '20K-200K/mes' },
+        '5-500': { USD: '5-500', COP: '20K-2M' },
+        // Tabla comparativa
+        '0-1K': { USD: '0-1K', COP: '0-4M' },
+        '200-500': { USD: '200-500', COP: '800K-2M' },
+        '2-5K': { USD: '2-5K', COP: '8M-20M' },
+        '500-1.5K': { USD: '500-1.5K', COP: '2M-6M' },
+        '5K+': { USD: '5K+', COP: '20M+' },
+        '1.5K-3K': { USD: '1.5K-3K', COP: '6M-12M' },
+        // Sección crítica
+        '500/mes': { USD: '500/mes', COP: '2M/mes' },
+        '5': { USD: '5', COP: '20K' },
+        '10': { USD: '10', COP: '40K' },
+        '50': { USD: '50', COP: '200K' },
+        '20K+': { USD: '20K+', COP: '80M+' },
+        '9.99/mes': { USD: '9.99/mes', COP: '40K/mes' },
+        '0-100': { USD: '0-100', COP: '0-400K' }
+    };
+
     function toggleRespuesta(btn, id) {
         // Remover selección anterior en este bloque
         const parent = btn.closest('.question-block');
@@ -635,6 +721,34 @@
         btn.classList.add('selected');
         document.getElementById(id).classList.add('show');
     }
+
+    function changeCurrency(currency) {
+        currentCurrency = currency;
+
+        // Actualizar botones
+        document.querySelectorAll('.currency-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // Actualizar todos los elementos con data-price
+        document.querySelectorAll('[data-price-usd]').forEach(el => {
+            const usdValue = el.getAttribute('data-price-usd');
+            const copValue = el.getAttribute('data-price-cop');
+            el.textContent = currency === 'USD' ? usdValue : copValue;
+        });
+
+        // Guardar preferencia
+        localStorage.setItem('selectedCurrency', currency);
+    }
+
+    // Cargar preferencia guardada al iniciar
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedCurrency = localStorage.getItem('selectedCurrency') || 'USD';
+        if (savedCurrency === 'COP') {
+            document.querySelector('[onclick="changeCurrency(\'COP\')"]').click();
+        }
+    });
 </script>
 
 </body>
